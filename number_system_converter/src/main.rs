@@ -21,9 +21,9 @@ fn decimal_to_binary(mut x: i32)
         x = x / 2;
     }
 
-    for i in vec.into_iter().rev()
+    while let Some(top) = vec.pop()
     {
-        print!("{i}");
+        print!("{top}");
     }
 }
 
