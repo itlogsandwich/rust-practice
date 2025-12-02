@@ -19,6 +19,7 @@ fn decimal_to_binary(mut x: i32)
         x = x / 2;
     }
 
+    print!("Binary: ");
     while let Some(top) = vec.pop()
     {
         print!("{top}");
@@ -45,6 +46,8 @@ fn decimal_to_octal(mut x: i32)
 
         x = x / 8;
     }
+
+    print!("Octal: ");
     while let Some(top) = vec.pop()
     {
         print!("{top}");
@@ -83,6 +86,7 @@ fn decimal_to_hexadecimal(x: i32)
         x = x / 16;
     }
 
+    print!("Hexadecimal: ");
     while let Some(top) = vec.pop()
     {
         print!("{top}");
@@ -100,18 +104,18 @@ fn main()
     io::stdin()
         .read_line(&mut num)
         .expect("Reading Error");
-    
+
     io ::stdout()
         .flush()
         .expect("Flushing Error");
-
 
     let num = match num.trim().parse::<i32>()
     {
         Ok(num) => num,
         Err(_) => 0,
     };
-    
+
+    println!("Decimal: {num}");
     decimal_to_binary(num);
     decimal_to_octal(num);
     decimal_to_hexadecimal(num); 
