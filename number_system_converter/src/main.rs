@@ -11,10 +11,8 @@ fn decimal_to_binary(mut x: i32)
         {
             vec.push(0);
         }
-        else 
-        {
-            vec.push(1);
-        }
+
+        vec.push(1);
 
         x = x / 2;
     }
@@ -38,11 +36,9 @@ fn decimal_to_octal(mut x: i32)
         {
             vec.push(0); 
         }
-        else 
-        {
-           let remainder = x % 8;
-           vec.push(remainder);
-        }
+
+        let remainder = x % 8;
+        vec.push(remainder);
 
         x = x / 8;
     }
@@ -67,21 +63,19 @@ fn decimal_to_hexadecimal(x: i32)
         {
             vec.push(0 as char);
         }
-        else 
+
+        let remainder = x % 16;
+        
+        match remainder 
         {
-            let remainder = x % 16;
-            
-            match remainder 
-            {
-                10 => vec.push('A'),
-                11 => vec.push('B'),
-                12 => vec.push('C'),
-                13 => vec.push('D'),
-                14 => vec.push('E'),
-                15 => vec.push('F'),
-                _ => vec.push((remainder + 0x30) as char),
-            };
-        }
+            10 => vec.push('A'),
+            11 => vec.push('B'),
+            12 => vec.push('C'),
+            13 => vec.push('D'),
+            14 => vec.push('E'),
+            15 => vec.push('F'),
+            _ => vec.push((remainder + 0x30) as char),
+        };
 
         x = x / 16;
     }
@@ -95,7 +89,7 @@ fn decimal_to_hexadecimal(x: i32)
     println!();
 }
 
-fn main() 
+fn decimal_conversions()
 {
     println!("Enter number: ");
     
@@ -119,4 +113,57 @@ fn main()
     decimal_to_binary(num);
     decimal_to_octal(num);
     decimal_to_hexadecimal(num); 
+}
+fn main() 
+{
+    loop 
+    {
+        println!("Number Converter!\n[1] Decimal to ...\n[2]Binary to ...\n[3]Octal to ...\n[4]Hexadecimal to ...\n[5]Exit");
+        let mut choice = String::new();
+
+        io::stdin()
+            .read_line(&mut choice)
+            .expect("Reading Error");
+
+        io ::stdout()
+            .flush()
+            .expect("Flushing Error");
+
+        let choice = match choice.trim().parse::<u8>()
+        {
+            Ok(num) => num,
+            Err(_) =>
+            {
+                println!("Parsing Error");
+                continue;
+            },
+        };
+
+        match choice 
+        {
+            1 =>
+            {
+                decimal_conversions();
+                break;
+            },
+
+            2 =>
+            {
+                break;
+            }
+
+            3 =>
+            {
+                break;
+            }
+
+            4 =>
+            {
+                break;
+            }
+
+            5 => break,
+            _ => println!("Invalid Choice"),
+        };
+    }
 }
