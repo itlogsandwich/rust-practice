@@ -89,6 +89,66 @@ fn decimal_to_hexadecimal(x: i32)
     println!();
 }
 
+fn binary_to_decimal(bin: &String)
+{
+    let count = bin.chars().count(); 
+    let mut vec: Vec<char> = Vec::new();
+
+    let mut i = 0;
+
+    while i != count
+    {
+        vec.push(bin.chars().nth(i).expect("NULL VALUE"));
+
+        i += 1;
+    }
+
+    for x in vec 
+    {
+        print!("{x}");
+    }
+    println!();
+}
+
+fn binary_conversion()
+{
+    println!("Enter binary");
+
+    let mut bin = String::new();
+
+    io::stdin()
+        .read_line(&mut bin)
+        .expect("Reading Error");
+
+    io::stdout()
+        .flush()
+        .expect("Flushing Error");
+
+    let bin = match bin.trim()
+    {
+        _ if bin.trim().chars().count() <= 8 => bin,
+        _ => return,
+    };
+
+
+    for x in bin.trim().chars()
+    {
+        match x 
+        {
+            '0' => continue,
+            '1' => continue,
+            _ =>
+            {
+                println!("INVALID BINARY");
+                return; 
+            },
+        };
+    }
+
+    println!("Binary: {}", &bin);
+    binary_to_decimal(&bin);
+}
+
 fn decimal_conversions()
 {
     println!("Enter number: ");
@@ -99,7 +159,7 @@ fn decimal_conversions()
         .read_line(&mut num)
         .expect("Reading Error");
 
-    io ::stdout()
+    io::stdout()
         .flush()
         .expect("Flushing Error");
 
@@ -114,6 +174,7 @@ fn decimal_conversions()
     decimal_to_octal(num);
     decimal_to_hexadecimal(num); 
 }
+
 fn main() 
 {
     loop 
@@ -149,6 +210,7 @@ fn main()
 
             2 =>
             {
+                binary_conversion();
                 break;
             }
 
