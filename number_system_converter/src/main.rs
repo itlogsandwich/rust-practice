@@ -89,24 +89,31 @@ fn decimal_to_hexadecimal(x: i32)
     println!();
 }
 
+fn binary_val(dec: u32, x: usize) -> u32
+{
+    let mut val = dec;
+    let arr = [128, 64, 32, 16, 8, 4, 2 ,1];   
+
+    val += arr[x];
+
+    return val;
+}
 fn binary_to_decimal(bin: &String)
 {
-    let count = bin.chars().count(); 
-    let mut vec: Vec<char> = Vec::new();
+    let characters: Vec<char> = bin.chars().collect();
 
-    let mut i = 0;
+    let mut dec = 0;
 
-    while i != count
+    for (x, char) in characters.iter().enumerate()
     {
-        vec.push(bin.chars().nth(i).expect("NULL VALUE"));
-
-        i += 1;
+        match char
+        {
+            '1' => dec = binary_val(dec, x),
+            _ => continue,
+        };
     }
 
-    for x in vec 
-    {
-        print!("{x}");
-    }
+    println!("Binary: {dec}");
     println!();
 }
 
