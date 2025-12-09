@@ -36,7 +36,6 @@ fn decimal_to_octal(mut x: i32)
         {
             vec.push(0); 
         }
-
         let remainder = x % 8;
         vec.push(remainder);
 
@@ -89,7 +88,7 @@ fn decimal_to_hexadecimal(x: i32)
     println!();
 }
 
-fn binary_val(dec: u32, x: usize) -> u32
+fn binary_val(dec: i32, x: usize) -> i32
 {
     let mut val = dec;
     let arr = [128, 64, 32, 16, 8, 4, 2 ,1];   
@@ -98,7 +97,8 @@ fn binary_val(dec: u32, x: usize) -> u32
 
     return val;
 }
-fn binary_to_decimal(bin: &String)
+
+fn binary_to_decimal(bin: &String) -> i32
 {
     let characters: Vec<char> = bin.chars().collect();
 
@@ -113,10 +113,47 @@ fn binary_to_decimal(bin: &String)
         };
     }
 
-    println!("Binary: {dec}");
-    println!();
+    return dec;
 }
 
+fn binary_to_octal(bin: &String)
+{
+    let dec = binary_to_decimal(bin);
+    decimal_to_octal(dec); 
+}
+
+fn binary_to_hexadecimal(bin: &String)
+{
+
+    let dec = binary_to_decimal(bin);
+    decimal_to_hexadecimal(dec);
+}
+
+fn octal_conversion()
+{
+    println!("Enter octal");
+
+    let mut oct = String::new();
+
+    io::stdin()
+        .read_line(&mut oct)
+        .expect("Reading Error");
+
+    io::stdout()
+        .flush()
+        .expect("Flushing Error");
+
+    let oct = match oct.trim()
+    {
+        _ if oct.trim().chars().count() <= 3 => oct,
+        _ =>
+        {
+            println!("Max 3 length!");
+            return;
+        },
+    };
+
+}
 fn binary_conversion()
 {
     println!("Enter binary");
@@ -134,9 +171,12 @@ fn binary_conversion()
     let bin = match bin.trim()
     {
         _ if bin.trim().chars().count() <= 8 => bin,
-        _ => return,
+        _ =>
+        {
+            println!("Max 8 length");
+            return;
+        }
     };
-
 
     for x in bin.trim().chars()
     {
@@ -152,8 +192,12 @@ fn binary_conversion()
         };
     }
 
-    println!("Binary: {}", &bin);
-    binary_to_decimal(&bin);
+    println!("==================");
+    print!("Binary: {}", &bin);
+    println!("Decimal: {}",binary_to_decimal(&bin));
+    binary_to_octal(&bin);
+    binary_to_hexadecimal(&bin);
+    println!("==================");
 }
 
 fn decimal_conversions()
@@ -176,17 +220,19 @@ fn decimal_conversions()
         Err(_) => 0,
     };
 
+    println!("==================");
     println!("Decimal: {num}");
     decimal_to_binary(num);
     decimal_to_octal(num);
     decimal_to_hexadecimal(num); 
+    println!("==================");
 }
 
 fn main() 
 {
     loop 
     {
-        println!("Number Converter!\n[1] Decimal to ...\n[2]Binary to ...\n[3]Octal to ...\n[4]Hexadecimal to ...\n[5]Exit");
+        println!("Number Converter!\n[1]Decimal to ...\n[2]Binary to ...\n[3]Octal to ...\n[4]Hexadecimal to ...\n[5]Exit");
         let mut choice = String::new();
 
         io::stdin()
