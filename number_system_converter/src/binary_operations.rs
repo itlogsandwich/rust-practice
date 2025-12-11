@@ -59,7 +59,28 @@ pub fn binary_conversion()
 
     let bin = match bin.trim()
     {
-        _ if bin.trim().chars().count() <= 8 => bin,
+        _ if bin.trim().chars().count() == 8 => bin,
+        _ if bin.trim().chars().count() < 8  =>
+        {
+            let mut s = String::new();
+
+            let count = bin.trim().chars().count();
+
+            let difference = 8 - count;
+
+            let mut x = 0;
+
+            while x < difference
+            {
+                s.push_str("0");
+
+                x += 1;
+            };
+
+            s.push_str(&bin);
+
+            s
+        },
         _ =>
         {
             println!("Max 8 length");
