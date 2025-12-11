@@ -11,8 +11,10 @@ pub fn decimal_to_binary(mut x: i32)
         {
             vec.push(0);
         }
-
-        vec.push(1);
+        else
+        {
+            vec.push(1);
+        }
 
         x = x / 2;
     }
@@ -36,8 +38,11 @@ pub fn decimal_to_octal(mut x: i32)
         {
             vec.push(0); 
         }
-        let remainder = x % 8;
-        vec.push(remainder);
+        else 
+        { 
+            let remainder = x % 8;
+            vec.push(remainder);
+        }
 
         x = x / 8;
     }
@@ -62,19 +67,21 @@ pub fn decimal_to_hexadecimal(x: i32)
         {
             vec.push(0 as char);
         }
-
-        let remainder = x % 16;
-        
-        match remainder 
+        else
         {
-            10 => vec.push('A'),
-            11 => vec.push('B'),
-            12 => vec.push('C'),
-            13 => vec.push('D'),
-            14 => vec.push('E'),
-            15 => vec.push('F'),
-            _ => vec.push((remainder + 0x30) as char),
-        };
+            let remainder = x % 16;
+            
+            match remainder 
+            {
+                10 => vec.push('A'),
+                11 => vec.push('B'),
+                12 => vec.push('C'),
+                13 => vec.push('D'),
+                14 => vec.push('E'),
+                15 => vec.push('F'),
+                _ => vec.push((remainder + 0x30) as char),
+            };
+        }
 
         x = x / 16;
     }
