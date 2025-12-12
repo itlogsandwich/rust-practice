@@ -1,6 +1,14 @@
 use std::io;
 use std::io::Write;
 
+
+pub fn octal_to_decimal(oct: &String)
+{
+    let characters: Vec<char> = Vec::new();
+
+
+}
+
 pub fn octal_conversion()
 {
     println!("Enter octal");
@@ -10,7 +18,7 @@ pub fn octal_conversion()
     io::stdin()
         .read_line(&mut oct)
         .expect("Reading Error");
-
+ 
     io::stdout()
         .flush()
         .expect("Flushing Error");
@@ -25,6 +33,16 @@ pub fn octal_conversion()
         },
     };
 
-    println!("{oct}");
+    for x in oct.trim().chars()
+    {
+        match x 
+        {
+            '0'..='7' => continue,
+            _ => return,
+        };
+    };
+
+    println!("Octal: {}", &oct);
+    octal_to_decimal(&oct);
 
 }
