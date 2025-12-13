@@ -14,15 +14,13 @@ fn binary_val(dec: i32, x: usize) -> i32
 
 fn binary_to_decimal(bin: &String) -> i32
 {
-    let characters: Vec<char> = bin.chars().collect();
-
     let mut dec = 0;
 
-    for (x, char) in characters.iter().enumerate()
+    for (x, chars) in bin.bytes().enumerate()
     {
-        match char
+        match chars
         {
-            '1' => dec = binary_val(dec, x),
+            b'1' => dec = binary_val(dec, x),
             _ => continue,
         };
     }
@@ -59,12 +57,12 @@ pub fn binary_conversion()
 
     let bin = match bin.trim()
     {
-        _ if bin.trim().chars().count() == 8 => bin,
-        _ if bin.trim().chars().count() < 8  =>
+        _ if bin.trim().bytes().count() == 8 => bin,
+        _ if bin.trim().bytes().count() < 8  =>
         {
             let mut s = String::new();
 
-            let count = bin.trim().chars().count();
+            let count = bin.trim().bytes().count();
 
             let difference = 8 - count;
 
@@ -72,7 +70,7 @@ pub fn binary_conversion()
 
             while x < difference
             {
-                s.push_str("0");
+                s.push('0');
 
                 x += 1;
             };
@@ -101,7 +99,6 @@ pub fn binary_conversion()
             },
         };
     }
-
     println!("==================");
     print!("Binary: {}", &bin);
     println!("Decimal: {}",binary_to_decimal(&bin));

@@ -3,24 +3,36 @@ use std::io::Write;
 
 pub fn decimal_to_binary(mut x: i32)
 {
-    let mut vec: Vec<i32> = Vec::new();
+    let mut s = String::new();
 
     while x > 0
     {
         if x % 2 == 0
         {
-            vec.push(0);
+            s.push('0');
         }
         else
         {
-            vec.push(1);
+            s.push('1');
         }
 
         x = x / 2;
     }
 
+    let count = s.bytes().count();
+    let difference = 8 - count;
+
+    let mut x = 0;
+
+    while x < difference
+    {
+        s.push('0');
+
+        x += 1;
+    }
+    
     print!("Binary: ");
-    while let Some(top) = vec.pop()
+    while let Some(top) = s.pop()
     {
         print!("{top}");
     }
@@ -30,25 +42,30 @@ pub fn decimal_to_binary(mut x: i32)
 
 pub fn decimal_to_octal(mut x: i32)
 {
-    let mut vec: Vec<i32> = Vec::new();
+    let mut s = String::new();
+
+    if x == 0
+    {
+        s.push('0');
+    }
 
     while x > 0
     {
         if x % 8 == 0
         {
-            vec.push(0); 
+            s.push('0'); 
         }
         else 
         { 
             let remainder = x % 8;
-            vec.push(remainder);
+            s.push((remainder as u8+ 0x30) as char);
         }
 
         x = x / 8;
     }
 
     print!("Octal: ");
-    while let Some(top) = vec.pop()
+    while let Some(top) = s.pop()
     {
         print!("{top}");
     }
@@ -59,13 +76,18 @@ pub fn decimal_to_octal(mut x: i32)
 pub fn decimal_to_hexadecimal(x: i32)
 {
     let mut x: u8 = x.try_into().unwrap();
-    let mut vec: Vec<char> = Vec::new();
+    let mut s = String::new();
+
+    if x == 0
+    {
+        s.push('0');
+    }
 
     while x > 0
     {
         if x % 16 == 0
         {
-            vec.push(0 as char);
+            s.push('0');
         }
         else
         {
@@ -73,13 +95,13 @@ pub fn decimal_to_hexadecimal(x: i32)
             
             match remainder 
             {
-                10 => vec.push('A'),
-                11 => vec.push('B'),
-                12 => vec.push('C'),
-                13 => vec.push('D'),
-                14 => vec.push('E'),
-                15 => vec.push('F'),
-                _ => vec.push((remainder + 0x30) as char),
+                10 => s.push('A'),
+                11 => s.push('B'),
+                12 => s.push('C'),
+                13 => s.push('D'),
+                14 => s.push('E'),
+                15 => s.push('F'),
+                _ => s.push((remainder + 0x30) as char),
             };
         }
 
@@ -87,7 +109,7 @@ pub fn decimal_to_hexadecimal(x: i32)
     }
 
     print!("Hexadecimal: ");
-    while let Some(top) = vec.pop()
+    while let Some(top) = s.pop()
     {
         print!("{top}");
     }
@@ -97,7 +119,7 @@ pub fn decimal_to_hexadecimal(x: i32)
 
 pub fn decimal_conversions()
 {
-    println!("Enter number: ");
+    println!("Enter decimal: ");
     
     let mut num = String::new();
 
