@@ -1,6 +1,7 @@
 mod decimal_operations;
 mod binary_operations;
 mod octal_operations;
+mod hexadecimal_operations;
 
 use std::io;
 use std::io::Write;
@@ -52,6 +53,7 @@ fn main()
 
             4 =>
             {
+                hexadecimal_operations::hexadecimal_conversion();
                 break;
             }
 

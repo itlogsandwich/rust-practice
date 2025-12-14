@@ -16,9 +16,9 @@ fn binary_to_decimal(bin: &String) -> i32
 {
     let mut dec = 0;
 
-    for (x, chars) in bin.bytes().enumerate()
+    for (x, byte) in bin.trim().bytes().enumerate()
     {
-        match chars
+        match byte
         {
             b'1' => dec = binary_val(dec, x),
             _ => continue,
@@ -86,12 +86,12 @@ pub fn binary_conversion()
         }
     };
 
-    for x in bin.trim().chars()
+    for x in bin.trim().bytes()
     {
         match x 
         {
-            '0' => continue,
-            '1' => continue,
+            b'0' => continue,
+            b'1' => continue,
             _ =>
             {
                 println!("INVALID BINARY");

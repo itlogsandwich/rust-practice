@@ -17,7 +17,7 @@ pub fn octal_to_decimal(oct: &String) -> i32
 
     let mut dec = 0;
 
-    for (x, byte) in oct.bytes().enumerate()
+    for (x, byte) in oct.trim().bytes().enumerate()
     {
         match byte
         {
