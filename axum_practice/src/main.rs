@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 pub use self::error::{Error, Result};
+use crate::model::ModelController;
 use std::net::SocketAddr;
 use axum::{Router, Json, middleware};
 use axum::extract::{Query, Path};
@@ -9,9 +10,11 @@ use axum::response::{Html, IntoResponse, Response};
 use serde::Deserialize;
 use tower_http::services::ServeDir;
 use tower_cookies::CookieManagerLayer;
+use axum::body::Body;
 
-
+mod ctx;
 mod error;
+mod model;
 mod web;
 
 fn routes_hello() -> Router
@@ -61,11 +64,17 @@ async fn main_response_mapper(res: Response) -> Response
 }
 
 #[tokio::main]
-async fn main()
+async fn main() -> Result<()>
 {
+    let mc = ModelController::new().await?;
+
+    let routes_apis = web::routes_tickets::routes(mc.clone())
+        .route_layer(middleware::from_fn(web::mw_auth::mw_require_auth::<Body>));
+
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .nest("/api", routes_apis)
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static());
@@ -77,5 +86,7 @@ async fn main()
         .serve(routes_all.into_make_service())
         .await
         .unwrap();
+
+    Ok(())
 }
 
