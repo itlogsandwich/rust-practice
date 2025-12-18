@@ -1,7 +1,7 @@
 use std::io;
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct Email
 {
     email: String,
@@ -26,7 +26,7 @@ impl Email
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct User
 {
     email: Email,
@@ -44,20 +44,27 @@ impl User
         }
     }
 
-    pub fn get_email(&mut self) -> &Email
+    pub fn get_email(&self) -> &Email
     {
         return &self.email;
     }
 
-    pub fn get_pwd(&mut self) -> &str
+    pub fn get_pwd(&self) -> &str
     {
         return &self.pwd;
     }
 }
 
-fn login_display(mut user: User)
+fn login_display(user: Option<&User>)
 {
-    println!("Welcome {}", user.get_email());
+    if let Some(logged_user) = user
+    {            
+        println!("Welcome {}", logged_user.get_email().email);
+    }
+    else
+    {
+        return;
+    }
 
     println!("SKIBIDI RIZZ");
 }
@@ -128,25 +135,10 @@ fn main()
                     continue;
                 }
                 
-                for user in &mut user_list
-                {
-                    match user
-                    {
-                        _ if user.get_email().email == email && user.get_pwd() == pwd =>
-                        {
-                            let logged_user = user.clone();
 
-                            println!();
-                            println!("Successful Login!");
-                            login_display(logged_user);
-                            break;
-                        },
-                        _ =>
-                        {
-                            println!("User does not exist!");
-                        },
-                    };
-                }
+                let logged_user = user_list.iter().find(|user| user.get_email().email == email && user.get_pwd() == pwd.as_str());
+ 
+                login_display(logged_user);
             },
 
             2 =>
