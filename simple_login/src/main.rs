@@ -1,6 +1,7 @@
 use std::io;
 use std::fmt;
 
+#[derive(Clone)]
 struct Email
 {
     email: String,
@@ -25,6 +26,7 @@ impl Email
     }
 }
 
+#[derive(Clone)]
 struct User
 {
     email: Email,
@@ -56,50 +58,146 @@ impl User
 fn login_display(mut user: User)
 {
     println!("Welcome {}", user.get_email());
+
+    println!("SKIBIDI RIZZ");
 }
 
 fn main() 
 {
+
+    let mut user_list: Vec<User> = Vec::new();
+
     loop 
     {
         println!("BLAH BLAH PORTAL");
 
-        println!("Enter Email: ");
-        let mut email = String::new();
-
+        println!("[1]Login, [2]Register, [3]Exit");
+        let mut choice = String::new();
+        
         io::stdin()
-            .read_line(&mut email)
-            .expect("Input Error");
+            .read_line(&mut choice)
+            .expect("Input error");
 
-        let email = match email.trim().to_string()
+        let choice = match choice.trim().parse::<u8>()
         {
-            _ if email.contains("@") => email,
-            _ =>
+            Ok(choice) => choice,
+            Err(_) =>
             {
-                println!("Invalid email");
+                println!("Parsing Error");
                 continue;
-            },
+            }
         };
 
-        println!();
+        match choice
+        {
+            1 =>
+            {
+                println!("LOGIN!");
+ 
+                println!("Enter Email: ");
+                let mut email = String::new();
 
-        println!("Enter password");
-        let mut pwd = String::new();
+                io::stdin()
+                    .read_line(&mut email)
+                    .expect("Input Error");
 
-        io::stdin()
-            .read_line(&mut pwd)
-            .expect("Input Error");
+                let email = match email.trim().to_string()
+                {
+                    _ if email.contains("@") => email,
+                    _ =>
+                    {
+                        println!("Invalid email");
+                        continue;
+                    },
+                };
 
-        pwd = pwd.trim().to_string();
+                println!();
 
-        if pwd.len() < 8 
-        { 
-            println!("Password must contain at least 8 characters");
-            continue;
-        }
+                println!("Enter password");
+                let mut pwd = String::new();
 
-        let user = User::new(Email::new(email), pwd);
-        
-        login_display(user);    
+                io::stdin()
+                    .read_line(&mut pwd)
+                    .expect("Input Error");
+
+                pwd = pwd.trim().to_string();
+
+                if pwd.len() < 8 
+                { 
+                    println!("Password must contain at least 8 characters");
+                    continue;
+                }
+                
+                for user in &mut user_list
+                {
+                    match user
+                    {
+                        _ if user.get_email().email == email && user.get_pwd() == pwd =>
+                        {
+                            let logged_user = user.clone();
+
+                            println!();
+                            println!("Successful Login!");
+                            login_display(logged_user);
+                            break;
+                        },
+                        _ =>
+                        {
+                            println!("User does not exist!");
+                        },
+                    };
+                }
+            },
+
+            2 =>
+            {
+                println!("REGISTER!");
+               
+                println!("Enter Email: ");
+                let mut email = String::new();
+
+                io::stdin()
+                    .read_line(&mut email)
+                    .expect("Input Error");
+
+                let email = match email.trim().to_string()
+                {
+                    _ if email.contains("@") => email,
+                    _ =>
+                    {
+                        println!("Invalid email");
+                        continue;
+                    },
+                };
+
+                println!();
+
+                println!("Enter password");
+                let mut pwd = String::new();
+
+                io::stdin()
+                    .read_line(&mut pwd)
+                    .expect("Input Error");
+
+                pwd = pwd.trim().to_string();
+
+                if pwd.len() < 8 
+                { 
+                    println!("Password must contain at least 8 characters");
+                    continue;
+                }
+
+                let user = User::new(Email::new(email), pwd);
+
+                user_list.push(user);
+            },
+
+            3 => 
+            {
+                println!("Exiting...");
+                break;
+            },
+            _ => println!("INVALID INPUT"),
+        };
     }
 }
