@@ -51,7 +51,18 @@ fn mark_out(todo_list: &mut TodoList)
         .expect("Input Error");
 
     let task = task.trim().parse::<usize>().expect("Parsing Error");
-       
+    
+    match task
+    {
+        _ if task > 0 && task < todo_list.length() => task,
+        _ => 
+        {
+            println!("Invalid Selection!");
+            println!();
+            return;
+        }
+    };
+
     todo_list.update(task);
 
     
