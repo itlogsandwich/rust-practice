@@ -15,6 +15,7 @@ fn add_todo(todo_list: &mut TodoList)
    
     
     todo_list.add(description);
+    println!();
 }
 
 fn show_todo(todo_list: &mut TodoList)
@@ -27,10 +28,12 @@ fn show_todo(todo_list: &mut TodoList)
 
 fn show_finished(todo_list: &mut TodoList)
 {
-    println!("Things to do!");
+    println!("Tasks Accomplished!");
     println!("==========");
     todo_list.list_finished();
     println!("==========");
+
+    println!();
 }
 
 fn mark_out(todo_list: &mut TodoList)
@@ -63,7 +66,9 @@ pub fn menu()
 
         show_todo(&mut todo_list);
 
-        println!("[1]Add Task\n[2]Show Todo\n[3]Mark as done\n[4]Exit");
+        println!();
+
+        println!("[1]Add Task\n[2]Show accomplished\n[3]Mark as done\n[4]Exit");
         
         let mut input = String::new();
 
