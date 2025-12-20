@@ -1,10 +1,29 @@
 use std::io;
 use std::fmt;
 
+#[derive(Debug, PartialEq)]
+enum Error
+{
+    InvalidEmail,
+    IncorrectPwd,
+}
+
 #[derive(Clone)]
 struct Email
 {
     email: String,
+}
+
+impl fmt::Display for Error
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    {
+        match self
+        {
+            Error::InvalidEmail => write!(f, "This is not a valid email address!"),
+            Error::IncorrectPwd => write!(f, "Passwords do not match!"),
+        }
+    }
 }
 
 impl fmt::Display for Email
@@ -17,11 +36,20 @@ impl fmt::Display for Email
 
 impl Email
 {
-    pub fn new(email: String) -> Self
+    pub fn new(email: String) -> Result<Self, Error>
     {
-        Self
+        let trimmed = email.trim();
+
+        match trimmed.split_once("@")
         {
-            email
+            Some((prefix, domain)) if domain.contains(".") => 
+            { 
+                Ok(Self { email })
+            }
+            _=> 
+            {
+                Err(Error::InvalidEmail)
+            },
         }
     }
 }
@@ -57,6 +85,8 @@ impl User
 
 fn login_display(user: &User)
 {
+
+    println!();
     println!("Welcome {}", user.get_email().email);
 
     println!("SKIBIDI RIZZ");
@@ -92,8 +122,13 @@ fn main()
         {
             1 =>
             {
-                println!("LOGIN!");
- 
+
+                println!("==========");
+                println!("LOGIN!"); 
+                println!("==========");
+
+                println!();
+
                 println!("Enter Email: ");
                 let mut email = String::new();
 
@@ -101,12 +136,13 @@ fn main()
                     .read_line(&mut email)
                     .expect("Input Error");
 
-                let email = match email.trim().to_string()
+                let email = match email.trim().split_once("@")
                 {
-                    _ if email.contains("@") => email,
-                    _ =>
+                    Some((prefix, domain)) if domain.contains(".") => email,
+                    _=> 
                     {
-                        println!("Invalid email");
+                        println!("Error {}", Error::InvalidEmail);
+                        println!();
                         continue;
                     },
                 };
@@ -136,14 +172,16 @@ fn main()
                 else
                 {
                     println!("Invalid Credentials");
-                }
- 
+                } 
             },
 
             2 =>
             {
-                println!("REGISTER!");
-               
+                println!("==========");
+                println!("REGISTER!"); 
+                println!("==========");
+
+                println!();
                 println!("Enter Email: ");
                 let mut email = String::new();
 
@@ -151,19 +189,21 @@ fn main()
                     .read_line(&mut email)
                     .expect("Input Error");
 
-                let email = match email.trim().to_string()
+                let email = Email::new(email);
+
+                let valid_email = match email
                 {
-                    _ if email.contains("@") => email,
-                    _ =>
+                    Ok(val) => val,
+                    Err(e) =>
                     {
-                        println!("Invalid email");
+                        println!("Error: {e}");
                         continue;
                     },
                 };
-
+               
                 println!();
-
                 println!("Enter password");
+
                 let mut pwd = String::new();
 
                 io::stdin()
@@ -177,10 +217,28 @@ fn main()
                     println!("Password must contain at least 8 characters");
                     continue;
                 }
+              
+                println!();
+                println!("Confirm Password");
 
-                let user = User::new(Email::new(email), pwd);
+                let mut confirmed_pwd = String::new();
 
-                user_list.push(user);
+                io::stdin()
+                    .read_line(&mut confirmed_pwd)
+                    .expect("Input Error");
+
+                confirmed_pwd = confirmed_pwd.trim().to_string();
+
+                if confirmed_pwd == pwd
+                {
+                    let user = User::new(valid_email, confirmed_pwd);
+                    user_list.push(user);
+                    println!();
+                }
+                else
+                {
+                    println!("Error: {}", Error::IncorrectPwd);
+                }
             },
 
             3 => 
