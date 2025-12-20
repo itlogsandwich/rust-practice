@@ -1,10 +1,9 @@
 use crate::todo_list::TodoList;
 use std::io;
 
-fn add_todo()
+fn add_todo(todo_list: &mut TodoList)
 {
-    let mut todo_list = TodoList::new();
-    print!("Enter Task: ");
+    println!("Enter Task: ");
     
     let mut description = String::new();
 
@@ -15,16 +14,56 @@ fn add_todo()
     description = description.trim().to_string();
    
     
-    todo_list.add(description); 
+    todo_list.add(description);
 }
 
+fn show_todo(todo_list: &mut TodoList)
+{
+    println!("Things to do!");
+    println!("==========");
+    todo_list.list();
+    println!("==========");
+}
+
+fn show_finished(todo_list: &mut TodoList)
+{
+    println!("Things to do!");
+    println!("==========");
+    todo_list.list_finished();
+    println!("==========");
+}
+
+fn mark_out(todo_list: &mut TodoList)
+{
+    println!("Tasks to do!");
+    println!("==========");
+    todo_list.list();
+    println!("==========");
+
+    println!("Pick to mark as done");
+    let mut task = String::new();
+
+    io::stdin()
+        .read_line(&mut task)
+        .expect("Input Error");
+
+    let task = task.trim().parse::<usize>().expect("Parsing Error");
+       
+    todo_list.update(task);
+
+    
+}
 pub fn menu()
 {
+    let mut todo_list = TodoList::new();
+
     loop
     {
         println!("Todo Tracker");
-        
-        println!();
+
+        show_todo(&mut todo_list);
+
+        println!("[1]Add Task\n[2]Show Todo\n[3]Mark as done\n[4]Exit");
         
         let mut input = String::new();
 
@@ -46,28 +85,22 @@ pub fn menu()
         {
             1 =>
             {
-                add_todo();
-                break;
+                add_todo(&mut todo_list);
             },
 
             2 =>
             {
-                break;
+                show_finished(&mut todo_list);
             },
 
-            3 => 
+            3 if todo_list.length() > 0  => 
             {
-                break;
+                mark_out(&mut todo_list);
             },
 
-            4 =>
-            {
-                break;
-            },
+            4 => break,
 
-            5 => break,
-
-            _ => println!("Invalid choice!"),
+            _ => println!("Invalid choice! There must be tasks to do!"),
         };
     }
 }

@@ -15,4 +15,9 @@ impl Todo
             is_done: false,
         }
     }
+
+    pub fn mark_as_done(&mut self)
+    {
+        self.is_done = true
+    }
 }
