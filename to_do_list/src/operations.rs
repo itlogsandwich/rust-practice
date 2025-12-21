@@ -50,7 +50,15 @@ fn mark_out(todo_list: &mut TodoList)
         .read_line(&mut task)
         .expect("Input Error");
 
-    let task = task.trim().parse::<usize>().expect("Parsing Error");
+    let task = match task.trim().parse::<usize>()
+    {
+        Ok(val) => val,
+        Err(_) => 
+        {
+            println!("Parsing Error!");
+            return;
+        },
+    };
     
     match task
     {
