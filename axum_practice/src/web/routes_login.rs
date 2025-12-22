@@ -20,7 +20,10 @@ async fn api_login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json
         return Err(Error::LoginFail);
     }
 
-    cookies.add(Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign"));
+    let mut cookie = Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign");
+    cookie.set_http_only(true);
+    cookie.set_path("/");
+    cookies.add(cookie);
 
     let body = Json(json!(
     {
@@ -32,6 +35,7 @@ async fn api_login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json
 
     Ok(body)
 }
+
 #[derive(Debug, Deserialize)]
 struct LoginPayload
 {
