@@ -16,8 +16,15 @@ impl Todo
         }
     }
 
-    pub fn mark_as_done(&mut self)
+    pub fn mark_as_done(&mut self) -> Result<(), String>
     {
-        self.is_done = true
+        if self.is_done
+        {
+            return Err(String::from("Already marked as done!"));
+        }
+
+        self.is_done = true;
+        Ok(())
+    
     }
 }

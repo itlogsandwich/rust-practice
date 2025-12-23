@@ -60,19 +60,11 @@ fn mark_out(todo_list: &mut TodoList)
         },
     };
     
-    match task
+    match todo_list.update(task)
     {
-        _ if task > 0 && task < todo_list.length() => task,
-        _ => 
-        {
-            println!("Invalid Selection!");
-            println!();
-            return;
-        }
+        Ok(()) => println!("Successfully added!"),
+        Err(e) => println!("Error has occured: {}", e),
     };
-
-    todo_list.update(task);
-
     
 }
 pub fn menu()

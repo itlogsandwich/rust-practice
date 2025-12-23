@@ -21,12 +21,24 @@ impl TodoList
         self.todos.push(todo);
     }
 
-    pub fn update(&mut self, index: usize)
+    pub fn update(&mut self, index: usize) -> Result<(), String>
     {
-        let todo = &mut self.todos[index - 1];
+        if index == 0
+        {   
+            return Err(String::from("Invalid index!"));
+        }
+        match self.todos.get_mut(index - 1)
+        {
+            Some(val) =>
+            {
+                val.mark_as_done()?;
 
-        todo.mark_as_done();
+                Ok(())
+            }
+            None => Err(String::from("Task not found")),
+        }
     }
+
     pub fn list(&self)
     {
         for (nth, todo) in self.todos.iter().enumerate()
