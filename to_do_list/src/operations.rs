@@ -2,21 +2,22 @@ use crate::todo_list::TodoList;
 use crate::error::Error;
 use std::io;
 
-fn add_todo(todo_list: &mut TodoList)
+fn add_todo(todo_list: &mut TodoList, path: &str) -> Result<(), Error>
 {
     println!("Enter Task: ");
     
     let mut description = String::new();
 
-    io::stdin()
-        .read_line(&mut description)
-        .expect("Input Error");
+    io::stdin().read_line(&mut description)?;
 
     description = description.trim().to_string();
    
     
     todo_list.add(description);
-    println!();
+
+    todo_list.save(path)?;
+
+    Ok(())
 }
 
 fn show_todo(todo_list: &mut TodoList)
@@ -37,7 +38,7 @@ fn show_finished(todo_list: &mut TodoList)
     println!();
 }
 
-fn mark_out(todo_list: &mut TodoList) -> Result<(), Error>
+fn mark_out(todo_list: &mut TodoList, path: &str) -> Result<(), Error>
 {
     println!("Tasks to do!");
     println!("==========");
@@ -47,18 +48,37 @@ fn mark_out(todo_list: &mut TodoList) -> Result<(), Error>
     println!("Pick to mark as done");
     let mut task = String::new();
 
-    io::stdin()
-        .read_line(&mut task)
-        .expect("Input Error");
+    io::stdin().read_line(&mut task)?;
 
     let task = task.trim().parse::<usize>()?;
     
-    todo_list.update(task)
+    todo_list.update(task)?;
+
+    todo_list.save(path)?;
+
+    Ok(())
 }
 
 pub fn menu()
 {
-    let mut todo_list = TodoList::new();
+    let path: &str = "tasks.json";
+    
+    let mut todo_list = if std::path::Path::new(path).exists()
+    {
+        match TodoList::load(path)
+        {
+            Ok(val) => val,
+            Err(e) =>
+            {
+                println!("Error has occured: {e}");
+                TodoList::new()
+            },
+        }
+    }
+    else
+    {
+        TodoList::new()
+    };
 
     loop
     {
@@ -79,9 +99,9 @@ pub fn menu()
         let input = match input.trim().parse::<u8>()
         {
             Ok(num) => num,
-            Err(_) =>
+            Err(e) =>
             {
-                println!("Error has occured: {}", Error::ParsingError);
+                println!("Error has occured: {e}");
                 continue;
             }
         };
@@ -90,7 +110,10 @@ pub fn menu()
         {
             1 =>
             {
-                add_todo(&mut todo_list);
+                if let Err(e) = add_todo(&mut todo_list, path)
+                {
+                    println!("Error has occured: {e}");
+                }
             },
 
             2 =>
@@ -100,9 +123,9 @@ pub fn menu()
 
             3 if todo_list.length() > 0  => 
             {
-                if let Err(e) = mark_out(&mut todo_list)
+                if let Err(e) = mark_out(&mut todo_list, path)
                 {
-                    println!("Error has occured: {}", e);
+                    println!("Error has occured: {e}");
                 }
             },
 

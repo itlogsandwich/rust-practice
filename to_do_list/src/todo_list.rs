@@ -1,5 +1,9 @@
 use crate::todo::Todo;
 use crate::error::Error;
+use serde::{Serialize, Deserialize};
+use std::fs;
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TodoList
 {
     todos: Vec<Todo>,
@@ -15,6 +19,24 @@ impl TodoList
 
 impl TodoList
 {
+    pub fn save(&self, path: &str) -> Result<(), Error>
+    {
+        let serialized = serde_json::to_string(&self)?;
+        
+        fs::write(path, serialized)?;
+
+        Ok(())
+    }
+
+    pub fn load(path: &str) -> Result<Self, Error>
+    {
+        let serialized = fs::read_to_string(path)?;
+
+        let deserialized: TodoList = serde_json::from_str(&serialized)?;
+        
+        Ok(deserialized)
+    }
+
     pub fn add(&mut self, description:String)
     {
         let todo = Todo::new(description);
@@ -59,4 +81,5 @@ impl TodoList
     }
 
     pub fn length(&self) -> usize { self.todos.len() }
+
 }
