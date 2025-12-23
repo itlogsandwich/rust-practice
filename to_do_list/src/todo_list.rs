@@ -1,5 +1,5 @@
 use crate::todo::Todo;
-
+use crate::error::Error;
 pub struct TodoList
 {
     todos: Vec<Todo>,
@@ -21,11 +21,11 @@ impl TodoList
         self.todos.push(todo);
     }
 
-    pub fn update(&mut self, index: usize) -> Result<(), String>
+    pub fn update(&mut self, index: usize) -> Result<(), Error>
     {
         if index == 0
         {   
-            return Err(String::from("Invalid index!"));
+            return Err(Error::InvalidIndex);
         }
         match self.todos.get_mut(index - 1)
         {
@@ -35,7 +35,7 @@ impl TodoList
 
                 Ok(())
             }
-            None => Err(String::from("Task not found")),
+            None => Err(Error::NotFound),
         }
     }
 

@@ -1,4 +1,5 @@
 use crate::todo_list::TodoList;
+use crate::error::Error;
 use std::io;
 
 fn add_todo(todo_list: &mut TodoList)
@@ -9,7 +10,7 @@ fn add_todo(todo_list: &mut TodoList)
 
     io::stdin()
         .read_line(&mut description)
-        .expect("Input error");
+        .expect("Input Error");
 
     description = description.trim().to_string();
    
@@ -36,7 +37,7 @@ fn show_finished(todo_list: &mut TodoList)
     println!();
 }
 
-fn mark_out(todo_list: &mut TodoList)
+fn mark_out(todo_list: &mut TodoList) -> Result<(), Error>
 {
     println!("Tasks to do!");
     println!("==========");
@@ -50,23 +51,11 @@ fn mark_out(todo_list: &mut TodoList)
         .read_line(&mut task)
         .expect("Input Error");
 
-    let task = match task.trim().parse::<usize>()
-    {
-        Ok(val) => val,
-        Err(_) => 
-        {
-            println!("Parsing Error!");
-            return;
-        },
-    };
+    let task = task.trim().parse::<usize>()?;
     
-    match todo_list.update(task)
-    {
-        Ok(()) => println!("Successfully added!"),
-        Err(e) => println!("Error has occured: {}", e),
-    };
-    
+    todo_list.update(task)
 }
+
 pub fn menu()
 {
     let mut todo_list = TodoList::new();
@@ -92,8 +81,8 @@ pub fn menu()
             Ok(num) => num,
             Err(_) =>
             {
-                println!("Parsing error");
-                return;
+                println!("Error has occured: {}", Error::ParsingError);
+                continue;
             }
         };
 
@@ -111,7 +100,10 @@ pub fn menu()
 
             3 if todo_list.length() > 0  => 
             {
-                mark_out(&mut todo_list);
+                if let Err(e) = mark_out(&mut todo_list)
+                {
+                    println!("Error has occured: {}", e);
+                }
             },
 
             4 => break,

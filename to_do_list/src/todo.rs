@@ -1,4 +1,4 @@
-
+use crate::error::Error;
 pub struct Todo
 {
     pub description: String,
@@ -16,11 +16,11 @@ impl Todo
         }
     }
 
-    pub fn mark_as_done(&mut self) -> Result<(), String>
+    pub fn mark_as_done(&mut self) -> Result<(), Error>
     {
         if self.is_done
         {
-            return Err(String::from("Already marked as done!"));
+            return Err(Error::AlreadyDone);
         }
 
         self.is_done = true;
