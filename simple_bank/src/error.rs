@@ -3,8 +3,10 @@ use std::fmt;
 #[derive(Debug)]
 pub enum Error
 {
-    Invalid,
+    InvalidName,
+    InvalidDeposit,
     NotFound,
+    AlreadyExists,
 }
 
 impl fmt::Display for Error
@@ -13,8 +15,10 @@ impl fmt::Display for Error
     {
         match self
         {
-            Error::Invalid => write!(f, "Invalid!"),
+            Error::InvalidName => write!(f, "Invalid Name!"),
+            Error::InvalidDeposit => write!(f, "Invalid Deposit!"),
             Error::NotFound => write!(f, "Details not found!"),
+            Error::AlreadyExists => write!(f, "Account alraedy exists"),
         }
     }
 }
