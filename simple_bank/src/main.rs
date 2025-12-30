@@ -1,9 +1,14 @@
 use std::io;
 use crate::bank::Bank;
-
+use crate::account::Account;
 mod account;
 mod bank;
 mod error;
+
+fn menu(acc: &Account)
+{
+    println!("Welcome, {}", acc.get_owner());   
+}
 
 fn main() 
 {
@@ -61,7 +66,11 @@ fn main()
                     }
                 };
 
-                bank.login(acc_num, pin);
+                match bank.auth(&acc_num, pin)
+                {
+                    Ok(val) => menu(val),
+                    Err(e) => println!("Error: {e}"),
+                }
             }
 
             2 =>

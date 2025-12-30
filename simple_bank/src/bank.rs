@@ -2,6 +2,7 @@ use crate::account::Account;
 use crate::error::Error;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub struct Bank
 {
     accounts: HashMap<String, Account>,
@@ -17,14 +18,14 @@ impl Bank
 
 impl Bank
 {
-    pub fn login(&self, acc_num: String, pin: u64) -> Result<(), Error>
+    pub fn auth(&self, acc_num: &str, pin: u64) -> Result<&Account, Error>
     { 
-        if let Some(acc) = self.accounts.get(&acc_num)
-        {
-           acc.check_pin(pin)?;
-        };
-        
-        Ok(())
+        let acc = self.accounts.get(acc_num)
+                    .ok_or(Error::NotFound)?;
+
+        acc.check_pin(pin)?;
+
+        Ok(acc)
     }
 
     pub fn create_account(&mut self, owner: String, pin: u64) -> Result<String, Error>
