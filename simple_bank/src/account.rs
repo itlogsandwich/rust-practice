@@ -1,6 +1,6 @@
 use crate::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Account
 {
     account_number: String,
@@ -34,11 +34,20 @@ impl Account
         }
     }
 
-    pub fn update_balance(&mut self, money: u64)
+    pub fn get_owner(&self) -> &str
+    {
+       &self.owner 
+    }
+    pub fn add_balance(&mut self, money: u64)
     {
         self.balance += money;
     }
     
+    pub fn deduct_balance(&mut self, money: u64)
+    {
+        self.balance -= money;
+    }
+
     pub fn get_account_number(&self) -> &str
     {
         &self.account_number
@@ -46,10 +55,5 @@ impl Account
     pub fn get_balance(&self) -> u64
     {
         self.balance
-    }
-
-    pub fn get_owner(&self) -> &str
-    {
-        &self.owner
     }
 }

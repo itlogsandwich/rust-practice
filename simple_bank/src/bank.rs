@@ -2,7 +2,9 @@ use crate::account::Account;
 use crate::error::Error;
 use std::collections::HashMap;
 
-#[derive(Debug)]
+
+pub type BankResult<T> = Result<T, Error>;
+#[derive(Debug, Clone)]
 pub struct Bank
 {
     accounts: HashMap<String, Account>,
@@ -18,7 +20,7 @@ impl Bank
 
 impl Bank
 {
-    pub fn auth(&self, acc_num: &str, pin: &str) -> Result<&Account, Error>
+    pub fn auth(&self, acc_num: &str, pin: &str) -> BankResult<&Account>
     { 
         let acc = self.accounts.get(acc_num)
                     .ok_or(Error::NotFound)?;
@@ -28,7 +30,7 @@ impl Bank
         Ok(acc)
     }
 
-    pub fn create_account(&mut self, owner: String, pin: String) -> Result<String, Error>
+    pub fn create_account(&mut self, owner: String, pin: String) -> BankResult<String>
     {
         if owner.is_empty()
         {
@@ -45,29 +47,44 @@ impl Bank
 
     }
 
-    pub fn deposit(&mut self, acc_num: String, money: u64) -> Result<(), Error>
+    pub fn display_owner(&self, acc_num: &str) -> BankResult<&str>
+    {
+        let owner = self.accounts.get(acc_num)
+                .map(|acc| acc.get_owner())
+                .ok_or(Error::NotFound)?;
+
+        Ok(owner)
+    }
+    pub fn check_balance(&self, acc_num: &str) -> BankResult<u64>
+    {
+        let balance = self.accounts.get(acc_num)
+                .map(|acc| acc.get_balance())
+                .ok_or(Error::NotFound)?;
+
+        Ok(balance)
+    }
+    pub fn deposit(&mut self, acc_num: &str, money: u64) -> BankResult<()>
     {
         if money == 0
         {
             return Err(Error::InvalidDeposit);
         }
 
-        if let Some(acc) = self.accounts.get_mut(&acc_num)
-        {
-            acc.update_balance(money);
-        }
-        else
-        {
-            return Err(Error::NotFound);
-        }
-
-        Ok(())
-
+        self.accounts.get_mut(acc_num)
+            .map(|acc| acc.add_balance(money))
+            .ok_or(Error::NotFound)
     }
 
-    pub fn proof(&self, acc_num: &str) -> bool
+    pub fn withdraw(&mut self, acc_num: &str, money: u64) -> BankResult<()>
     {
-        self.accounts.contains_key(acc_num)
+        if money == 0
+        {
+            return Err(Error::InvalidWithdrawal);
+        }
+
+        self.accounts.get_mut(acc_num)
+            .map(|acc| acc.deduct_balance(money))
+            .ok_or(Error::NotFound)
     }
 }
 
