@@ -3,7 +3,7 @@ use std::fmt;
 #[derive(Debug)]
 pub enum Error
 {
-    InvalidName,
+    InvalidCredentials,
     InvalidDeposit,
     NotFound,
     AlreadyExists,
@@ -15,10 +15,11 @@ impl fmt::Display for Error
     {
         match self
         {
-            Error::InvalidName => write!(f, "Invalid Name!"),
+            Error::InvalidCredentials => write!(f, "Invalid or Incorrect Credentials!"),
             Error::InvalidDeposit => write!(f, "Invalid Deposit!"),
             Error::NotFound => write!(f, "Details not found!"),
             Error::AlreadyExists => write!(f, "Account alraedy exists"),
+
         }
     }
 }

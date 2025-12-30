@@ -1,3 +1,5 @@
+use crate::error::Error;
+
 pub struct Account
 {
     account_number: String,
@@ -18,7 +20,18 @@ impl Account
             balance: 0,
         }
     } 
-
+    
+    pub fn check_pin(&self, pin: u64) -> Result<bool, Error>
+    {
+        if self.pin != pin
+        {
+            return Ok(true); 
+        }
+        else
+        {
+            return Err(Error::InvalidCredentials);
+        }
+    }
     pub fn update_balance(&mut self, money: u64)
     {
         self.balance += money;
