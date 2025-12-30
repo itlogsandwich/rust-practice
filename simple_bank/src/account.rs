@@ -5,13 +5,13 @@ pub struct Account
 {
     account_number: String,
     owner: String,
-    pin: u64,
+    pin: String,
     balance: u64,
 }
 
 impl Account
 {
-    pub fn new(account_number: String, owner: String, pin: u64) -> Self
+    pub fn new(account_number: String, owner: String, pin: String) -> Self
     {
         Self
         {
@@ -22,7 +22,7 @@ impl Account
         }
     } 
 
-    pub fn check_pin(&self, pin: u64) -> Result<(), Error>
+    pub fn check_pin(&self, pin: &str) -> Result<(), Error>
     {
         if self.pin == pin
         {

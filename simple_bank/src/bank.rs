@@ -18,7 +18,7 @@ impl Bank
 
 impl Bank
 {
-    pub fn auth(&self, acc_num: &str, pin: u64) -> Result<&Account, Error>
+    pub fn auth(&self, acc_num: &str, pin: &str) -> Result<&Account, Error>
     { 
         let acc = self.accounts.get(acc_num)
                     .ok_or(Error::NotFound)?;
@@ -28,7 +28,7 @@ impl Bank
         Ok(acc)
     }
 
-    pub fn create_account(&mut self, owner: String, pin: u64) -> Result<String, Error>
+    pub fn create_account(&mut self, owner: String, pin: String) -> Result<String, Error>
     {
         if owner.is_empty()
         {
@@ -63,6 +63,11 @@ impl Bank
 
         Ok(())
 
+    }
+
+    pub fn proof(&self, acc_num: &str) -> bool
+    {
+        self.accounts.contains_key(acc_num)
     }
 }
 
