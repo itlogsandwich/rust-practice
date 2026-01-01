@@ -72,7 +72,7 @@ impl Bank
 
         self.accounts.get_mut(acc_num)
             .map(|acc| acc.add_balance(money))
-            .ok_or(Error::NotFound)
+            .ok_or(Error::NotFound)?
     }
 
     pub fn withdraw(&mut self, acc_num: &str, money: u64) -> BankResult<()>
@@ -84,7 +84,7 @@ impl Bank
 
         self.accounts.get_mut(acc_num)
             .map(|acc| acc.deduct_balance(money))
-            .ok_or(Error::NotFound)
+            .ok_or(Error::NotFound)?
     }
 }
 
