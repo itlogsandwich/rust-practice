@@ -2,7 +2,6 @@ use axum::{Json, http::StatusCode};
 use axum::response::{IntoResponse, Response};
 use serde_json::json;
 use std::io::Error as IoError;
-use std::fmt;
 #[derive(Debug)]
 pub enum Error
 {
@@ -15,28 +14,6 @@ pub enum Error
     PasswordLength,
 }
 
-impl fmt::Display for Error
-{
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-    {
-        match self
-        {
-            Self::InternalServer(msg) => write!(f, "{msg}"),
-
-            Self::InvalidCredentials => write!(f, "Invalid or Incorrect Credentials!"),
-
-            Self::InvalidDeposit => write!(f, "Invalid Deposit!"),
-            Self::InvalidWithdrawal => write!(f, "Invalid Withdrawal"),
-
-            Self::NotFound => write!(f, "Details not found!"),
-
-            Self::NotMatching => write!(f, "Passwords do not match"),
-            Self::PasswordLength => write!(f, "Password must contain at least 8 characters!"),
-
-        }
-    }
-}
-
 impl IntoResponse for Error
 {
     fn into_response(self) -> Response
@@ -44,8 +21,15 @@ impl IntoResponse for Error
         let(status, error_message) = match self
         {
             Self::InternalServer(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
-            _ => (StatusCode::INTERNAL_SERVER_ERROR, String::from("LAZY ERROR")),
 
+            Self::InvalidCredentials => (StatusCode::UNAUTHORIZED, "Wrong PIN".to_string()),
+
+            Self::InvalidDeposit => (StatusCode::BAD_REQUEST, "Fail to Deposit!".to_string()),
+            Self::InvalidWithdrawal => (StatusCode::BAD_REQUEST, "Insufficient Funds!".to_string()),
+
+            Self::NotFound => (StatusCode::NOT_FOUND, "Account not Found".to_string()),
+            Self::NotMatching => (StatusCode::BAD_REQUEST, "Passwords do not match".to_string()),
+            Self::PasswordLength => (StatusCode::BAD_REQUEST, "Password must contain at least 8 characters!".to_string()),             
         };
 
         let body = Json(json!(
@@ -74,5 +58,3 @@ impl From<String> for Error
     }
 }
 
-
-impl std::error::Error for Error {}

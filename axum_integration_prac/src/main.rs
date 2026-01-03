@@ -51,50 +51,44 @@ async fn create_acc_handler(
 async fn withdraw_handler(
     State(state): State<AppState>,
     Json(payload): Json<TransactionRequest>,
-    ) -> impl IntoResponse
+    ) -> Result<impl IntoResponse, Error>
 {
     println!("--> {:<12} - withdraw_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
     
-    match bank.withdraw(&payload.acc_num, payload.amount)
-    {
-        Ok(_) => "Withdraw Successful".into_response(),
-        Err(e) => format!("Error {:?}", e).into_response(),
-    }
+    bank.withdraw(&payload.acc_num, payload.amount)?;
+
+    Ok("Withdrawn Successfully!")
 }
 
 async fn deposit_handler(
     State(state): State<AppState>,
     Json(payload): Json<TransactionRequest>,
-    ) -> impl IntoResponse
+    ) -> Result<impl IntoResponse, Error>
 {
     
     println!("--> {:<12} - deposit_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
 
-    match bank.deposit(&payload.acc_num, payload.amount)
-    {
-        Ok(_) => "Deposit Successful".into_response(),
-        Err(e) => format!("Error {:?}", e).into_response(),
-    }
+    bank.deposit(&payload.acc_num, payload.amount)?;
+
+    Ok("Deposit Successfully")
 }
 
 async fn balance(
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
-    ) -> impl IntoResponse
+    ) -> Result<impl IntoResponse, Error>
 {
     println!("--> {:<12} - balance - ", "HANDLER");
 
-    let mut bank = state.bank.lock().unwrap();
+    let bank = state.bank.lock().unwrap();
 
-    match bank.check_balance(&acc_num)
-    {
-        Ok(bal) => format!("Balance: ${bal}").into_response(),
-        Err(e) => format!("Error {:?}", e).into_response(),
-    }
+    let balance = bank.check_balance(&acc_num)?;
+
+    Ok(format!("Balance: ${balance}"))
 }
 
 async fn hello_world() -> impl IntoResponse
