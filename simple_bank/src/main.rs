@@ -178,6 +178,10 @@ fn main()
             2 =>
             {
                 println!("Register Account");
+
+                println!("");
+
+                println!("Enter your name");
                 let mut owner = String::new();
 
                 io::stdin()
