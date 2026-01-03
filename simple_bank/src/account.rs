@@ -40,7 +40,7 @@ impl Account
     }
     pub fn add_balance(&mut self, money: u64) -> Result<(), Error>
     {
-        if self.balance == 0
+        if money == 0
         {
             return Err(Error::InvalidDeposit);
         }
@@ -51,7 +51,7 @@ impl Account
     
     pub fn deduct_balance(&mut self, money: u64) -> Result<(), Error>
     {
-        if self.balance == 0
+        if self.balance < money
         {
             return Err(Error::InvalidWithdrawal);
         }
