@@ -2,7 +2,6 @@ use crate::account::Account;
 use crate::error::Error;
 use std::collections::HashMap;
 
-
 pub type BankResult<T> = Result<T, Error>;
 
 #[derive(Debug, Clone)]
@@ -56,6 +55,7 @@ impl Bank
 
         Ok(owner)
     }
+
     pub fn check_balance(&self, acc_num: &str) -> BankResult<u64>
     {
         let balance = self.accounts.get(acc_num)
@@ -64,6 +64,7 @@ impl Bank
 
         Ok(balance)
     }
+
     pub fn deposit(&mut self, acc_num: &str, money: u64) -> BankResult<()>
     {
         if money == 0
@@ -72,8 +73,10 @@ impl Bank
         }
 
         self.accounts.get_mut(acc_num)
-            .map(|acc| acc.add_balance(money))
             .ok_or(Error::NotFound)?
+            .add_balance(money)?;
+
+        Ok(())
     }
 
     pub fn withdraw(&mut self, acc_num: &str, money: u64) -> BankResult<()>
@@ -84,8 +87,10 @@ impl Bank
         }
 
         self.accounts.get_mut(acc_num)
-            .map(|acc| acc.deduct_balance(money))
             .ok_or(Error::NotFound)?
+            .deduct_balance(money)?;
+
+        Ok(())
     }
 }
 
