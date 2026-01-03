@@ -85,8 +85,10 @@ impl Bank
         }
 
         self.accounts.get_mut(acc_num)
-            .map(|acc| acc.deduct_balance(money))
             .ok_or(Error::NotFound)?
+            .deduct_balance(money)?;
+
+        Ok(())
     }
 }
 
