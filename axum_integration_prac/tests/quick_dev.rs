@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde_json::json;
 
 #[tokio::test]
-async fn quick_dev() -> httpc_test::Result<()>
+async fn quick_dev() -> Result<()>
 {
     let hc = httpc_test::new_client("http://localhost:3000")?;
     
@@ -16,11 +16,12 @@ async fn quick_dev() -> httpc_test::Result<()>
         })
     ).await?;
 
-    let status = req_create_acc.status();
-    let id = req_create_acc.text_body()?;
- 
-    let x = format!("Status: {status}");
-    println!("{x}\nID:{id}");
+    req_create_acc.print().await?;
+
+
+    let json_data = req_create_acc.json_body()?;
+
+    let id = json_data["acc_num"].as_str().expect("There should be an acc_num if successful");
 
     hc.do_get(&format!("/balance/{id}")).await?.print().await?;
 

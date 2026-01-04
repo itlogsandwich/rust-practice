@@ -5,7 +5,7 @@ use axum::routing::{get, post};
 use axum::response::{IntoResponse, Html};
 use axum::extract::{Path, State, Json};
 use axum::Router;
-use serde::{ Deserialize};
+use serde::{ Deserialize, Serialize};
 use std::sync::{ Arc, Mutex }; 
 
 mod error;
@@ -32,6 +32,12 @@ struct CreateRequest
     pin: String,
 }
 
+#[derive(Serialize)]
+struct CreateResponse
+{ 
+    acc_num: String,
+    msg: String,
+}
 
 async fn create_acc_handler(
     State(state): State<AppState>,
@@ -44,7 +50,14 @@ async fn create_acc_handler(
 
     match bank.create_account(payload.owner, payload.pin)
     {
-        Ok(acc) => acc.into_response(),
+        Ok(acc) => 
+        {
+            Json(CreateResponse
+            {
+                acc_num: acc,
+                msg: String::from("Account Successfully Created!"),
+            }).into_response()
+        },
         Err(e) => format!("Error {:?}", e).into_response(),
     }
 
