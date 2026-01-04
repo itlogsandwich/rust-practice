@@ -1,17 +1,20 @@
 use crate::error::Error;
 use crate::bank::Bank;
-use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate };
+use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate };
 use axum::routing::{get, post};
-use axum::response::{IntoResponse, Html};
+use axum::response::{IntoResponse, Redirect};
 use axum::extract::{Path, State, Json};
-use axum::Router;
-use serde::{ Deserialize, Serialize};
+use axum::{Router, Form};
+use serde::{ Deserialize};
 use std::sync::{ Arc, Mutex }; 
 use tower_http::services::ServeDir;
 mod error;
 mod account;
 mod bank;
 mod templates;
+
+
+type HandlerResult<T> = Result<T, Error>;
 
 #[derive(Clone)]
 struct AppState
@@ -33,42 +36,41 @@ struct CreateRequest
     pin: String,
 }
 
-#[derive(Serialize)]
-struct CreateResponse
-{ 
-    acc_num: String,
-    msg: String,
+// #[derive(Serialize)]
+// struct CreateResponse
+// { 
+//     acc_num: String,
+//     msg: String,
+// }
+
+
+async fn show_acc_form_handler() -> impl IntoResponse
+{
+
+    println!("--> {:<12} - show_acc_form - ", "HANDLER");
+    
+    let template = AccFormTemplate{};
+    HtmlTemplate(template)
 }
-
-
 
 async fn create_acc_handler(
     State(state): State<AppState>,
-    Json(payload): Json<CreateRequest>,
-    ) -> impl IntoResponse
+    Form(payload): Form<CreateRequest>,
+    ) -> HandlerResult<Redirect>
 {
     println!("--> {:<12} - create_acc_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
 
-    match bank.create_account(payload.owner, payload.pin)
-    {
-        Ok(acc) => 
-        {
-            Json(CreateResponse
-            {
-                acc_num: acc,
-                msg: String::from("Account Successfully Created!"),
-            }).into_response()
-        },
-        Err(e) => format!("Error {:?}", e).into_response(),
-    }
+    let acc_num = bank.create_account(payload.owner, payload.pin)?;
+
+    Ok(Redirect::to(&format!("/balance/{acc_num}")))
 
 }
 async fn withdraw_handler(
     State(state): State<AppState>,
     Json(payload): Json<TransactionRequest>,
-    ) -> Result<impl IntoResponse, Error>
+    ) -> HandlerResult<impl IntoResponse>
 {
     println!("--> {:<12} - withdraw_handler - ", "HANDLER");
 
@@ -82,7 +84,7 @@ async fn withdraw_handler(
 async fn deposit_handler(
     State(state): State<AppState>,
     Json(payload): Json<TransactionRequest>,
-    ) -> Result<impl IntoResponse, Error>
+    ) -> HandlerResult<impl IntoResponse>
 {
     
     println!("--> {:<12} - deposit_handler - ", "HANDLER");
@@ -97,7 +99,7 @@ async fn deposit_handler(
 async fn balance(
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
-    ) -> Result<impl IntoResponse, Error>
+    ) -> HandlerResult<impl IntoResponse>
 {
     println!("--> {:<12} - balance - ", "HANDLER");
 
@@ -134,7 +136,7 @@ fn create_app() -> Router
         .route("/balance/{acc_num}", get(balance))
         .route("/deposit", post(deposit_handler))
         .route("/withdraw", post(withdraw_handler))
-        .route("/create", post(create_acc_handler))
+        .route("/create", get(show_acc_form_handler).post(create_acc_handler))
         .with_state(shared_state)
 }
 

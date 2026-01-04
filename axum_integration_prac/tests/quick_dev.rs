@@ -8,6 +8,8 @@ async fn quick_dev() -> Result<()>
     
     hc.do_get("/").await?.print().await?;
 
+    //CREATE ACC IS NOT WORKING PROPERLY RN. DUE TO CODE CHANGES. I'VE MADE IT A LOT MORE HTML
+    //INTERACTIVE.
     let req_create_acc = hc.do_post(
         "/create",
         json!({

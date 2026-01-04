@@ -3,37 +3,44 @@
 {% block title %} BANK DASHBOARD {% endblock %}
 
 {% block head %}
+
 <style>
-
-ul{
-    display: flex;
-    list-style-type: none;
-    background-color: #FA5C5C;
-    margin: 0;
-    padding: 0;
-    justify-content: flex-end;
-}
-
-li{
-  margin: 10px;
-  padding: 20px;
-  font-size: 30px;
-}
+  .container{
+    display:flex;
+    margin: 10%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
 </style>
 
 {% endblock %}
 
 {% block content %}
-  <nav id = "nav-bar">
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Account</a></li>
-    </ul>
-  </nav>
 
-  <h1>
-    BANK DEEZ NUTS!
-  </h1>
+<div class = "container">
+
+  <div>
+    <h1 style = "font-size: 50px;">
+      BANK DEEZ NUTS!
+    </h1>
+  </div>
+
+  <div>
+    <a href = "/create"
+      style = "font-size: 25px;
+              display: inline-block;
+              background-color: #FEC288;
+              color: white;
+              padding: 10px 20px;
+              text-decoration: none;
+              border-radius: 5px;
+              ">
+      SIGN UP NOW!
+    </a>
+  </div>
+
+</div>
+
 {% endblock %}

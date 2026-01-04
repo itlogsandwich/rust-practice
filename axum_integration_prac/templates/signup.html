@@ -1,0 +1,46 @@
+{% extends "template.html" %}
+
+{% block title %} SIGN UP {% endblock %}
+
+{% block head %}
+
+<style>
+
+  .container{
+    display:flex;
+    margin: 10%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .form{
+    display: flex; 
+    flex-direction: column; 
+    width: 300px;
+    gap: 10px;
+  }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class = "container">
+  <form class ="form" action = "/create" method = "POST">
+    <div>
+      <label for = "owner"> Owner: </label>
+      <input type = "text" id = "owner" name = "owner">
+    </div>
+
+    <div>
+      <label for = "pin"> Pin: </label>
+      <input type = "password" id = "pin" name = "pin" style ="width: 200px;">
+    </div>
+
+    <button type = "submit"> Sign Up! </button>
+  </form>
+</div>
+
+{% endblock %}
+

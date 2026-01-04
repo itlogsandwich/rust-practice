@@ -7,6 +7,10 @@ pub struct DashboardTemplate;
 
 
 #[derive(Template)]
+#[template(path = "signup.html")]
+pub struct AccFormTemplate;
+
+#[derive(Template)]
 #[template(path = "balance.html")]
 pub struct BalanceTemplate
 {

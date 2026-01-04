@@ -2,7 +2,7 @@ use crate::account::Account;
 use crate::error::Error;
 use std::collections::HashMap;
 
-pub type BankResult<T> = Result<T, Error>;
+type BankResult<T> = Result<T, Error>;
 
 #[derive(Debug, Clone)]
 pub struct Bank

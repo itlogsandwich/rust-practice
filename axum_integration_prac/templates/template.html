@@ -6,11 +6,45 @@
     <title> {% block title %} {title} {% endblock %}</title>
     <link href="css/style.css" rel="stylesheet">
 
+  <style>
+  
+  body{
+    background-color: #FEEAC9;
+  }
+  ul{
+      display: flex;
+      list-style-type: none;
+      background-color: #FA5C5C;
+      margin: 0;
+      padding: 0;
+      justify-content: flex-end;
+  }
+
+  li{
+    margin: 10px;
+    padding: 20px;
+    font-size: 30px;
+  }
+
+</style>
+
     {% block head %}{% endblock %}
-  </head>
+</head>
   <body>
     <div id = "content"> 
+
+      <nav id = "nav-bar">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#">Balance</a></li>
+          <li><a href="#">Deposit</a></li>
+          <li><a href="#">Withdraw</a></li>
+          <li><a href="#">Account</a></li>
+        </ul>
+      </nav>
+
       {% block content %}{% endblock %}
+
     </div>
   </body>
 </html>
