@@ -1,16 +1,17 @@
 use crate::error::Error;
 use crate::bank::Bank;
-
+use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate };
 use axum::routing::{get, post};
 use axum::response::{IntoResponse, Html};
 use axum::extract::{Path, State, Json};
 use axum::Router;
 use serde::{ Deserialize, Serialize};
 use std::sync::{ Arc, Mutex }; 
-
+use tower_http::services::ServeDir;
 mod error;
 mod account;
 mod bank;
+mod templates;
 
 #[derive(Clone)]
 struct AppState
@@ -38,6 +39,8 @@ struct CreateResponse
     acc_num: String,
     msg: String,
 }
+
+
 
 async fn create_acc_handler(
     State(state): State<AppState>,
@@ -102,14 +105,20 @@ async fn balance(
 
     let balance = bank.check_balance(&acc_num)?;
 
-    Ok(format!("Balance: ${balance}"))
+    let template = BalanceTemplate
+    {
+        balance
+    };
+
+    Ok(HtmlTemplate(template))
 }
 
-async fn hello_world() -> impl IntoResponse
+async fn dashboard() -> impl IntoResponse
 { 
-    println!("--> {:<12} - hello_world - ", "HANDLER");
-
-    Html(format!("Hello, World!"))
+    println!("--> {:<12} - dashboard - ", "HANDLER");
+    
+    let template = DashboardTemplate{};
+    HtmlTemplate(template)
 }
 
 fn create_app() -> Router
@@ -120,7 +129,8 @@ fn create_app() -> Router
     };
 
     Router::new()
-        .route("/", get(hello_world))
+        .nest_service("/static", ServeDir::new("static"))
+        .route("/", get(dashboard))
         .route("/balance/{acc_num}", get(balance))
         .route("/deposit", post(deposit_handler))
         .route("/withdraw", post(withdraw_handler))

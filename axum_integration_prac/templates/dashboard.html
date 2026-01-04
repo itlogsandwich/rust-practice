@@ -1,0 +1,39 @@
+{% extends "template.html" %}
+
+{% block title %} BANK DASHBOARD {% endblock %}
+
+{% block head %}
+<style>
+
+ul{
+    display: flex;
+    list-style-type: none;
+    background-color: #FA5C5C;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-end;
+}
+
+li{
+  margin: 10px;
+  padding: 20px;
+  font-size: 30px;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+  <nav id = "nav-bar">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">Account</a></li>
+    </ul>
+  </nav>
+
+  <h1>
+    BANK DEEZ NUTS!
+  </h1>
+{% endblock %}
