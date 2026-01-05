@@ -36,10 +36,17 @@
       <nav id = "nav-bar">
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="#">Balance</a></li>
-          <li><a href="#">Deposit</a></li>
-          <li><a href="#">Withdraw</a></li>
-          <li><a href="#">Account</a></li>
+          {% match current_user %}
+            {% when Some(id) %}
+              <li><a href="/balance/{{ id }}">Balance</a></li>
+              <li><a href="/deposit/{{ id }}">Deposit</a></li>
+              <li><a href="/withdraw/{{ id }}">Withdraw</a></li>
+              <li><span syle = "float:right"> Account: {{ id }} </span></li>
+
+            {% when None %} 
+              <span> | </span> 
+              <li><a href="/create">Create Account</a></li>
+          {% endmatch %}
         </ul>
       </nav>
 

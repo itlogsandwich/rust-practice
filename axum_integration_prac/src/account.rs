@@ -38,6 +38,7 @@ impl Account
     {
        &self.owner 
     }
+
     pub fn add_balance(&mut self, money: u64) -> Result<(), Error>
     {
         if money == 0
@@ -45,8 +46,8 @@ impl Account
             return Err(Error::InvalidDeposit);
         }
 
-        Ok(self.balance += money)
-        
+        self.balance += money;
+        Ok(()) 
     }
     
     pub fn deduct_balance(&mut self, money: u64) -> Result<(), Error>
@@ -56,7 +57,8 @@ impl Account
             return Err(Error::InvalidWithdrawal);
         }
 
-        Ok(self.balance -= money)
+        self.balance -= money;
+        Ok(())
     }
 
     pub fn get_account_number(&self) -> &str

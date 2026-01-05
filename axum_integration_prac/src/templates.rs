@@ -3,18 +3,41 @@ use axum::response::{IntoResponse, Response, Html};
 
 #[derive(Template)]
 #[template(path = "dashboard.html")]
-pub struct DashboardTemplate;
+pub struct DashboardTemplate
+{
+    pub current_user: Option<String>
+}
 
 
 #[derive(Template)]
 #[template(path = "signup.html")]
-pub struct AccFormTemplate;
+pub struct AccFormTemplate
+{
+    pub current_user: Option<String>
+}
 
 #[derive(Template)]
 #[template(path = "balance.html")]
 pub struct BalanceTemplate
 {
-    pub balance: u64
+    pub current_user: Option<String>,
+    pub balance: u64,
+}
+
+#[derive(Template)]
+#[template(path = "deposit.html")]
+pub struct DepositTemplate
+{
+    pub current_user: Option<String>,
+    pub acc_num: String,
+}
+
+#[derive(Template)]
+#[template(path = "withdraw.html")]
+pub struct WithdrawTemplate
+{
+    pub current_user: Option<String>,
+    pub acc_num: String,
 }
 
 pub struct HtmlTemplate<T>(pub T);
@@ -27,7 +50,11 @@ impl<T> IntoResponse for HtmlTemplate<T>
         match self.0.render()
         {
             Ok(html) => Html(html).into_response(),
-            Err(err) => println!("Error: {err}").into_response(),
+            Err(err) => 
+            {
+                println!("Error: {err}");
+                ().into_response()
+            },
         }
     }
 }

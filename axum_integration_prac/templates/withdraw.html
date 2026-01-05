@@ -1,0 +1,42 @@
+{% extends "template.html" %}
+
+{% block title %} Withdraw Money {% endblock %}
+
+{% block head %}
+
+<style>
+
+  .container{
+    display:flex;
+    margin: 10%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .form{
+    display: flex; 
+    flex-direction: column; 
+    width: 300px;
+    gap: 10px;
+  }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class = "container">
+<form class ="form" action = "/withdraw/{{ acc_num }}" method = "POST">
+
+    <div>
+      <label for = "amount"> Amount: </label>
+      <input type = "text" id = "amount" name = "amount" style ="width: 200px;">
+    </div>
+
+    <button type = "submit"> Withdraw! </button>
+  </form>
+</div>
+
+{% endblock %}
+

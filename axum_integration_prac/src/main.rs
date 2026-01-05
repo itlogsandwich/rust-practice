@@ -1,9 +1,9 @@
 use crate::error::Error;
 use crate::bank::Bank;
-use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate };
-use axum::routing::{get, post};
+use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate };
+use axum::routing::{get};
 use axum::response::{IntoResponse, Redirect};
-use axum::extract::{Path, State, Json};
+use axum::extract::{Path, State};
 use axum::{Router, Form};
 use serde::{ Deserialize};
 use std::sync::{ Arc, Mutex }; 
@@ -25,7 +25,6 @@ struct AppState
 #[derive(Deserialize)]
 struct TransactionRequest
 {
-    acc_num: String,
     amount: u64,
 }
 
@@ -49,7 +48,10 @@ async fn show_acc_form_handler() -> impl IntoResponse
 
     println!("--> {:<12} - show_acc_form - ", "HANDLER");
     
-    let template = AccFormTemplate{};
+    let template = AccFormTemplate
+    {
+        current_user: None,
+    };
     HtmlTemplate(template)
 }
 
@@ -67,23 +69,55 @@ async fn create_acc_handler(
     Ok(Redirect::to(&format!("/balance/{acc_num}")))
 
 }
+
+async fn show_withdraw_form_handler( 
+    Path(acc_num): Path<String>
+    ) -> impl IntoResponse
+{
+    println!("--> {:<12} - show_withdraw_form - ", "HANDLER");
+
+    let template = WithdrawTemplate
+    {
+        acc_num: acc_num.clone(),
+        current_user: Some(acc_num),
+    };
+
+    HtmlTemplate(template)
+}
+
 async fn withdraw_handler(
     State(state): State<AppState>,
-    Json(payload): Json<TransactionRequest>,
-    ) -> HandlerResult<impl IntoResponse>
+    Path(acc_num): Path<String>,
+    Form(payload): Form<TransactionRequest>,
+    ) -> HandlerResult<Redirect>
 {
     println!("--> {:<12} - withdraw_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
     
-    bank.withdraw(&payload.acc_num, payload.amount)?;
+    bank.withdraw(&acc_num, payload.amount)?;
 
-    Ok("Withdrawn Successfully!")
+    Ok(Redirect::to(&format!("/balance/{}", &acc_num)))
 }
 
+async fn show_deposit_form_handler(
+    Path(acc_num): Path<String>
+    ) -> impl IntoResponse
+{
+    println!("--> {:<12} - show_deposit_form - ", "HANDLER");
+    
+    let template = DepositTemplate
+    {
+        acc_num: acc_num.clone(),
+        current_user: Some(acc_num),
+    };
+
+    HtmlTemplate(template)
+}
 async fn deposit_handler(
     State(state): State<AppState>,
-    Json(payload): Json<TransactionRequest>,
+    Path(acc_num): Path<String>,
+    Form(payload): Form<TransactionRequest>,
     ) -> HandlerResult<impl IntoResponse>
 {
     
@@ -91,9 +125,9 @@ async fn deposit_handler(
 
     let mut bank = state.bank.lock().unwrap();
 
-    bank.deposit(&payload.acc_num, payload.amount)?;
+    bank.deposit(&acc_num, payload.amount)?;
 
-    Ok("Deposit Successfully")
+    Ok(Redirect::to(&format!("/balance/{}", &acc_num)))
 }
 
 async fn balance(
@@ -109,6 +143,7 @@ async fn balance(
 
     let template = BalanceTemplate
     {
+        current_user: Some(acc_num),
         balance
     };
 
@@ -119,7 +154,10 @@ async fn dashboard() -> impl IntoResponse
 { 
     println!("--> {:<12} - dashboard - ", "HANDLER");
     
-    let template = DashboardTemplate{};
+    let template = DashboardTemplate
+    { 
+        current_user: None,
+    };
     HtmlTemplate(template)
 }
 
@@ -134,8 +172,8 @@ fn create_app() -> Router
         .nest_service("/static", ServeDir::new("static"))
         .route("/", get(dashboard))
         .route("/balance/{acc_num}", get(balance))
-        .route("/deposit", post(deposit_handler))
-        .route("/withdraw", post(withdraw_handler))
+        .route("/deposit/{acc_num}", get(show_deposit_form_handler).post(deposit_handler))
+        .route("/withdraw/{acc_num}", get(show_withdraw_form_handler).post(withdraw_handler))
         .route("/create", get(show_acc_form_handler).post(create_acc_handler))
         .with_state(shared_state)
 }
