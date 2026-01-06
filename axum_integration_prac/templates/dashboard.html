@@ -13,6 +13,26 @@
     align-items: center;
   }
 
+  .sign_up_btn{
+    width: 100%;
+    padding: 10px;
+    background-color: #FEC288;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .sign_up_btn:hover{
+      background-color: #FA5C5C;
+  }
+
+  .sign_up_btn:active{
+      background-color: #FA5C5C;
+  }
+
 </style>
 
 {% endblock %}
@@ -23,20 +43,12 @@
 
   <div>
     <h1 style = "font-size: 50px;">
-      BANK DEEZ NUTS!
+      BANKING WEB APP TEST
     </h1>
   </div>
 
   <div>
-    <a href = "/create"
-      style = "font-size: 25px;
-              display: inline-block;
-              background-color: #FEC288;
-              color: white;
-              padding: 10px 20px;
-              text-decoration: none;
-              border-radius: 5px;
-              ">
+    <a class = "sign_up_btn" href = "/create">
       SIGN UP NOW!
     </a>
   </div>

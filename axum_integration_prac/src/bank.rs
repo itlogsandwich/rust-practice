@@ -30,7 +30,7 @@ impl Bank
         Ok(acc)
     }
 
-    pub fn create_account(&mut self, owner: String, pin: String) -> BankResult<String>
+    pub fn create_account(&mut self, owner: String, pin: String, confirm_pin: String) -> BankResult<String>
     {
         if owner.is_empty()
         {
@@ -38,6 +38,16 @@ impl Bank
         }
 
         let acc_num = format!("{:04}", self.accounts.len() + 1000);
+
+        if pin.len() < 8
+        {
+            return Err(Error::PasswordLength);
+        }
+
+        if pin != confirm_pin
+        {
+            return Err(Error::NotMatching);
+        }
 
         let account = Account::new(acc_num.clone(), owner, pin);
 

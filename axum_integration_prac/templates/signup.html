@@ -20,6 +20,36 @@
     gap: 10px;
   }
 
+  input[type = "text"], input[type = "password"]{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #FEC288;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+      background-color: #FD8A6B;
+  }
+
+  button[type="submit"]:active {
+      background-color: #FA5C5C;
+  }
+
 </style>
 
 {% endblock %}
@@ -28,14 +58,20 @@
 
 <div class = "container">
   <form class ="form" action = "/create" method = "POST">
-    <div>
+
+    <div class = "form-div">
       <label for = "owner"> Owner: </label>
       <input type = "text" id = "owner" name = "owner">
     </div>
 
-    <div>
+    <div class = "form-div">
       <label for = "pin"> Pin: </label>
-      <input type = "password" id = "pin" name = "pin" style ="width: 200px;">
+      <input type = "password" id = "pin" name = "pin">
+    </div>
+
+    <div class = "form-div">
+      <label for = "confirm_pin"> Confirm Pin: </label>
+      <input type = "password" id = "confirm_pin" name = "confirm_pin">
     </div>
 
     <button type = "submit"> Sign Up! </button>

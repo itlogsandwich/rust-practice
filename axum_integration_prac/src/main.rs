@@ -33,6 +33,7 @@ struct CreateRequest
 { 
     owner: String,
     pin: String,
+    confirm_pin: String,
 }
 
 // #[derive(Serialize)]
@@ -64,7 +65,7 @@ async fn create_acc_handler(
 
     let mut bank = state.bank.lock().unwrap();
 
-    let acc_num = bank.create_account(payload.owner, payload.pin)?;
+    let acc_num = bank.create_account(payload.owner, payload.pin, payload.confirm_pin)?;
 
     Ok(Redirect::to(&format!("/balance/{acc_num}")))
 
