@@ -5,7 +5,8 @@ use axum::response::{IntoResponse, Response, Html};
 #[template(path = "dashboard.html")]
 pub struct DashboardTemplate
 {
-    pub current_user: Option<String>
+    pub current_user: Option<String>,
+    pub msg: Option<String>,
 }
 
 
@@ -13,7 +14,8 @@ pub struct DashboardTemplate
 #[template(path = "signup.html")]
 pub struct AccFormTemplate
 {
-    pub current_user: Option<String>
+    pub current_user: Option<String>,
+    pub msg: Option<String>,
 }
 
 #[derive(Template)]
@@ -22,6 +24,7 @@ pub struct BalanceTemplate
 {
     pub current_user: Option<String>,
     pub balance: u64,
+    pub msg: Option<String>,
 }
 
 #[derive(Template)]
@@ -30,6 +33,7 @@ pub struct DepositTemplate
 {
     pub current_user: Option<String>,
     pub acc_num: String,
+    pub msg: Option<String>,
 }
 
 #[derive(Template)]
@@ -38,6 +42,7 @@ pub struct WithdrawTemplate
 {
     pub current_user: Option<String>,
     pub acc_num: String,
+    pub msg: Option<String>,
 }
 
 pub struct HtmlTemplate<T>(pub T);

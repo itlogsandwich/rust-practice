@@ -3,7 +3,7 @@ use crate::bank::Bank;
 use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate };
 use axum::routing::{get};
 use axum::response::{IntoResponse, Redirect};
-use axum::extract::{Path, State};
+use axum::extract::{Path, State, Query};
 use axum::{Router, Form};
 use serde::{ Deserialize};
 use std::sync::{ Arc, Mutex }; 
@@ -26,6 +26,12 @@ struct AppState
 struct TransactionRequest
 {
     amount: u64,
+}
+
+#[derive(Deserialize)]
+struct MessageParams
+{
+    msg: Option<String>
 }
 
 #[derive(Deserialize)]
@@ -52,6 +58,7 @@ async fn show_acc_form_handler() -> impl IntoResponse
     let template = AccFormTemplate
     {
         current_user: None,
+        msg: None, 
     };
     HtmlTemplate(template)
 }
@@ -66,8 +73,9 @@ async fn create_acc_handler(
     let mut bank = state.bank.lock().unwrap();
 
     let acc_num = bank.create_account(payload.owner, payload.pin, payload.confirm_pin)?;
+    let target = &format!("/balance/{}?msg=Account+Sucessfully+Created", &acc_num);
 
-    Ok(Redirect::to(&format!("/balance/{acc_num}")))
+    Ok(Redirect::to(target))
 
 }
 
@@ -81,6 +89,7 @@ async fn show_withdraw_form_handler(
     {
         acc_num: acc_num.clone(),
         current_user: Some(acc_num),
+        msg: None,
     };
 
     HtmlTemplate(template)
@@ -97,8 +106,8 @@ async fn withdraw_handler(
     let mut bank = state.bank.lock().unwrap();
     
     bank.withdraw(&acc_num, payload.amount)?;
-
-    Ok(Redirect::to(&format!("/balance/{}", &acc_num)))
+    let target = &format!("/balance/{}?msg=Sucessfully+withdrawn+${}", &acc_num, payload.amount);
+    Ok(Redirect::to(target))
 }
 
 async fn show_deposit_form_handler(
@@ -111,6 +120,7 @@ async fn show_deposit_form_handler(
     {
         acc_num: acc_num.clone(),
         current_user: Some(acc_num),
+        msg: None,
     };
 
     HtmlTemplate(template)
@@ -127,13 +137,14 @@ async fn deposit_handler(
     let mut bank = state.bank.lock().unwrap();
 
     bank.deposit(&acc_num, payload.amount)?;
-
-    Ok(Redirect::to(&format!("/balance/{}", &acc_num)))
+    let target = &format!("/balance/{}?msg=Sucessfully+deposited+${}", &acc_num, payload.amount);
+    Ok(Redirect::to(target))
 }
 
 async fn balance(
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
+    Query(params): Query<MessageParams>,
     ) -> HandlerResult<impl IntoResponse>
 {
     println!("--> {:<12} - balance - ", "HANDLER");
@@ -145,7 +156,8 @@ async fn balance(
     let template = BalanceTemplate
     {
         current_user: Some(acc_num),
-        balance
+        balance,
+        msg: params.msg,
     };
 
     Ok(HtmlTemplate(template))
@@ -158,6 +170,7 @@ async fn dashboard() -> impl IntoResponse
     let template = DashboardTemplate
     { 
         current_user: None,
+        msg: None,
     };
     HtmlTemplate(template)
 }

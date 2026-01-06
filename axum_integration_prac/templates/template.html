@@ -26,31 +26,48 @@
     font-size: 30px;
   }
 
+  .flash-message{
+    background: #d4edda; 
+    color: #155724; 
+    padding: 10px; 
+    border-radius: 5px; 
+    margin-bottom: 20px;
+  }
+
 </style>
 
     {% block head %}{% endblock %}
 </head>
   <body>
-    <div id = "content"> 
+    <main>
 
-      <nav id = "nav-bar">
-        <ul>
-          <li><a href="/">Home</a></li>
-          {% match current_user %}
-            {% when Some(id) %}
-              <li><a href="/balance/{{ id }}">Balance</a></li>
-              <li><a href="/deposit/{{ id }}">Deposit</a></li>
-              <li><a href="/withdraw/{{ id }}">Withdraw</a></li>
-              <li><span syle = "float:right"> Account: {{ id }} </span></li>
+      <div id = "content"> 
+        <nav id = "nav-bar">
+          <ul>
+            <li><a href="/">Home</a></li>
+            {% match current_user %}
+              {% when Some(id) %}
+                <li><a href="/balance/{{ id }}">Balance</a></li>
+                <li><a href="/deposit/{{ id }}">Deposit</a></li>
+                <li><a href="/withdraw/{{ id }}">Withdraw</a></li>
+                <li><span syle = "float:right"> Account: {{ id }} </span></li>
 
-            {% when None %} 
-              <li><a href="/create">Create Account</a></li>
-          {% endmatch %}
-        </ul>
-      </nav>
+              {% when None %} 
+                <li><a href="/create">Create Account</a></li>
+            {% endmatch %}
+          </ul>
+        </nav>
 
-      {% block content %}{% endblock %}
+        {% match msg %}
+          {% when Some(msg) %}
+            <div class = "flash-message">
+              {{ msg }}
+            </div>
+            {% when None %}
+        {% endmatch %}
 
-    </div>
+        {% block content %}{% endblock %}
+      </div>
+    </main>
   </body>
 </html>
