@@ -1,5 +1,7 @@
+use crate::error::Error;
 use askama::Template;
 use axum::response::{IntoResponse, Response, Html};
+
 
 #[derive(Template)]
 #[template(path = "dashboard.html")]
@@ -25,6 +27,14 @@ pub struct BalanceTemplate
     pub current_user: Option<String>,
     pub balance: u64,
     pub msg: Option<String>,
+}
+
+
+#[derive(Template)]
+#[template(path = "fragments/balance_display.html")]
+pub struct BalanceFragment
+{
+    pub balance: u64,
 }
 
 #[derive(Template)]
@@ -58,7 +68,7 @@ impl<T> IntoResponse for HtmlTemplate<T>
             Err(err) => 
             {
                 println!("Error: {err}");
-                ().into_response()
+                (Error::InternalServer(err.to_string())).into_response()
             },
         }
     }

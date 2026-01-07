@@ -1,10 +1,11 @@
 use crate::error::Error;
 use crate::bank::Bank;
-use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate };
+use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate, BalanceFragment };
 use axum::routing::{get};
-use axum::response::{IntoResponse, Redirect};
+use axum::response::{IntoResponse, Redirect };
 use axum::extract::{Path, State, Query};
 use axum::{Router, Form};
+use axum::http::HeaderMap;
 use serde::{ Deserialize};
 use std::sync::{ Arc, Mutex }; 
 use tower_http::services::ServeDir;
@@ -142,6 +143,7 @@ async fn deposit_handler(
 }
 
 async fn balance(
+    headers: HeaderMap,
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
     Query(params): Query<MessageParams>,
@@ -153,14 +155,28 @@ async fn balance(
 
     let balance = bank.check_balance(&acc_num)?;
 
-    let template = BalanceTemplate
-    {
-        current_user: Some(acc_num),
-        balance,
-        msg: params.msg,
-    };
+    let is_htmx = headers.contains_key("hx-request");
 
-    Ok(HtmlTemplate(template))
+    if is_htmx
+    {
+        let template = BalanceFragment
+        {
+            balance
+        };
+   
+        Ok(HtmlTemplate(template).into_response())
+    }
+    else
+    {
+        let template = BalanceTemplate
+        {
+            current_user: Some(acc_num),
+            balance,
+            msg: params.msg,
+        };
+
+        Ok(HtmlTemplate(template).into_response())
+    }
 }
 
 async fn dashboard() -> impl IntoResponse
