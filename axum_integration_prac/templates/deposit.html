@@ -58,7 +58,8 @@
 {% block content %}
 
 <div class = "container">
-  <form class ="form" action = "/deposit/{{ acc_num }}" method = "POST">
+
+<form class ="form" hx-post = "/deposit/{{ acc_num }}" hx-swap ="outerHTML">
 
     <div>
       <label for = "amount"> Amount: </label>
@@ -67,6 +68,6 @@
 
     <button type = "submit"> Deposit! </button>
   </form>
-</div>
+
 
 {% endblock %}

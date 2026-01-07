@@ -57,7 +57,7 @@
 {% block content %}
 
 <div class = "container">
-<form class ="form" action = "/withdraw/{{ acc_num }}" method = "POST">
+<form class ="form" hx-post = "/withdraw/{{ acc_num }}" hx-swap = "outerHTML">
 
     <div>
       <label for = "amount"> Amount: </label>

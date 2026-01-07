@@ -1,8 +1,8 @@
 use crate::error::Error;
 use crate::bank::Bank;
-use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate, BalanceFragment };
+use crate::templates::{ HtmlTemplate, DashboardTemplate, BalanceTemplate, AccFormTemplate, DepositTemplate, WithdrawTemplate, BalanceFragment};
 use axum::routing::{get};
-use axum::response::{IntoResponse, Redirect };
+use axum::response::{IntoResponse, Redirect, Response};
 use axum::extract::{Path, State, Query};
 use axum::{Router, Form};
 use axum::http::HeaderMap;
@@ -97,18 +97,42 @@ async fn show_withdraw_form_handler(
 }
 
 async fn withdraw_handler(
+    headers: HeaderMap,
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
     Form(payload): Form<TransactionRequest>,
-    ) -> HandlerResult<Redirect>
+    ) -> HandlerResult<impl IntoResponse>
 {
     println!("--> {:<12} - withdraw_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
     
     bank.withdraw(&acc_num, payload.amount)?;
-    let target = &format!("/balance/{}?msg=Sucessfully+withdrawn+${}", &acc_num, payload.amount);
-    Ok(Redirect::to(target))
+
+    let is_htmx = headers.contains_key("hx-request");
+
+    if is_htmx
+    {
+
+        let body_contents = format!(r#"
+            <h1>
+                Successfully Withdrawn ${amount}!
+            </h1>"#,
+
+            amount = payload.amount,
+        );
+        Ok(
+        Response::builder()
+            .header("HX-TRIGGER","transaction_complete")
+            .body(body_contents)?
+            .into_response()
+        )
+    }
+    else
+    {
+        let target = &format!("/balance/{}", &acc_num);
+        Ok(Redirect::to(target).into_response())
+    }
 }
 
 async fn show_deposit_form_handler(
@@ -127,6 +151,7 @@ async fn show_deposit_form_handler(
     HtmlTemplate(template)
 }
 async fn deposit_handler(
+    headers: HeaderMap,
     State(state): State<AppState>,
     Path(acc_num): Path<String>,
     Form(payload): Form<TransactionRequest>,
@@ -136,10 +161,32 @@ async fn deposit_handler(
     println!("--> {:<12} - deposit_handler - ", "HANDLER");
 
     let mut bank = state.bank.lock().unwrap();
-
     bank.deposit(&acc_num, payload.amount)?;
-    let target = &format!("/balance/{}?msg=Sucessfully+deposited+${}", &acc_num, payload.amount);
-    Ok(Redirect::to(target))
+
+    let is_htmx = headers.contains_key("hx-request");
+
+    if is_htmx
+    {
+        let body_contents = format!(r#"
+            <h1>
+                Successfully Deposited ${amount}!
+            </h1>"#,
+
+            amount = payload.amount,
+        );
+        Ok(
+        Response::builder()
+            .header("HX-Trigger","transaction_complete")
+            .body(body_contents)?
+            .into_response()
+        )
+    }
+    else
+    {
+        let target = &format!("/balance/{acc_num}");
+        Ok(Redirect::to(target).into_response())
+    }
+
 }
 
 async fn balance(

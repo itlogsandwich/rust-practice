@@ -1,4 +1,4 @@
-use axum::{Json, http::StatusCode};
+use axum::{Json, http::StatusCode, http::Error as AxumError};
 use axum::response::{IntoResponse, Response};
 use serde_json::json;
 use std::io::Error as IoError;
@@ -45,6 +45,14 @@ impl IntoResponse for Error
 impl From<IoError> for Error
 {
     fn from(error: IoError) -> Self
+    {
+        Error::InternalServer(error.to_string())
+    }
+}
+
+impl From<AxumError> for Error
+{
+    fn from(error: AxumError) -> Self
     {
         Error::InternalServer(error.to_string())
     }

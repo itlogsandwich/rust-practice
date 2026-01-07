@@ -26,7 +26,7 @@
     font-size: 30px;
   }
 
-  .flash-message{
+  #flash-message{
     background: #d4edda; 
     color: #155724; 
     padding: 10px; 
@@ -62,7 +62,7 @@
 
         {% match msg %}
           {% when Some(msg) %}
-            <div class = "flash-message">
+            <div id = "flash-message">
               {{ msg }}
             </div>
             {% when None %}
