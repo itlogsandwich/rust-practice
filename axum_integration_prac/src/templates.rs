@@ -4,10 +4,20 @@ use axum::response::{IntoResponse, Response, Html};
 
 
 #[derive(Template)]
+#[template(path = "home.html")]
+pub struct HomeTemplate
+{
+    pub current_user: Option<String>,
+    pub msg: Option<String>,
+}
+
+#[derive(Template)]
 #[template(path = "dashboard.html")]
 pub struct DashboardTemplate
 {
     pub current_user: Option<String>,
+    pub acc_num: String,
+    pub balance: u64,
     pub msg: Option<String>,
 }
 
@@ -20,14 +30,6 @@ pub struct AccFormTemplate
     pub msg: Option<String>,
 }
 
-#[derive(Template)]
-#[template(path = "balance.html")]
-pub struct BalanceTemplate
-{
-    pub current_user: Option<String>,
-    pub balance: u64,
-    pub msg: Option<String>,
-}
 
 
 #[derive(Template)]
@@ -38,23 +40,18 @@ pub struct BalanceFragment
 }
 
 #[derive(Template)]
-#[template(path = "deposit.html")]
-pub struct DepositTemplate
+#[template(path = "fragments/deposit_display.html")]
+pub struct DepositFragment
 {
-    pub current_user: Option<String>,
     pub acc_num: String,
-    pub msg: Option<String>,
 }
 
 #[derive(Template)]
-#[template(path = "withdraw.html")]
-pub struct WithdrawTemplate
+#[template(path = "fragments/withdraw_display.html")]
+pub struct WithdrawFragment
 {
-    pub current_user: Option<String>,
     pub acc_num: String,
-    pub msg: Option<String>,
 }
-
 pub struct HtmlTemplate<T>(pub T);
 
 impl<T> IntoResponse for HtmlTemplate<T>

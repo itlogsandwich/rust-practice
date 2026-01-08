@@ -1,0 +1,57 @@
+{% extends "template.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block head %}
+
+<style>
+
+  .container{
+    display:flex;
+    margin: 10%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .sign_up_btn{
+      width: 100%;
+      padding: 10px;
+      background-color: #FEC288;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .sign_up_btn:hover{
+        background-color: #FA5C5C;
+    }
+
+    .sign_up_btn:active{
+        background-color: #FA5C5C;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class = "container">
+  <div>
+    <h1 style = "font-size: 50px;">
+      BANKING WEB APP TEST
+    </h1>
+  </div>
+
+  <div>
+    <a class = "sign_up_btn" href = "/create">
+      SIGN UP NOW!
+    </a>
+  </div>
+
+</div>
+
+{% endblock  %}

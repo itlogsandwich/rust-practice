@@ -49,9 +49,9 @@
             <li><a href="/">Home</a></li>
             {% match current_user %}
               {% when Some(id) %}
-                <li><a href="/balance/{{ id }}">Balance</a></li>
-                <li><a href="/deposit/{{ id }}">Deposit</a></li>
-                <li><a href="/withdraw/{{ id }}">Withdraw</a></li>
+                <li><a href="/fragments/balance/{{ id }}">Balance</a></li>
+                <li><a href="/fragments/deposit/{{ id }}">Deposit</a></li>
+                <li><a href="/fragments/withdraw/{{ id }}">Withdraw</a></li>
                 <li><span syle = "float:right"> Account: {{ id }} </span></li>
 
               {% when None %} 
