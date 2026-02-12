@@ -16,10 +16,10 @@ pub fn decimal_to_binary(mut x: i32)
             s.push('1');
         }
 
-        x = x / 2;
+        x /= 2;
     }
 
-    let count = s.bytes().count();
+    let count = s.len();
     let difference = 8 - count;
 
     let mut x = 0;
@@ -61,7 +61,7 @@ pub fn decimal_to_octal(mut x: i32)
             s.push((remainder as u8+ 0x30) as char);
         }
 
-        x = x / 8;
+        x /= 8;
     }
 
     print!("Octal: ");
@@ -85,7 +85,7 @@ pub fn decimal_to_hexadecimal(x: i32)
 
     while x > 0
     {
-        if x % 16 == 0
+        if x.is_multiple_of(16)
         {
             s.push('0');
         }
@@ -105,7 +105,7 @@ pub fn decimal_to_hexadecimal(x: i32)
             };
         }
 
-        x = x / 16;
+        x /= 16;
     }
 
     print!("Hexadecimal: ");
@@ -131,11 +131,7 @@ pub fn decimal_conversions()
         .flush()
         .expect("Flushing Error");
 
-    let num = match num.trim().parse::<i32>()
-    {
-        Ok(num) => num,
-        Err(_) => 0,
-    };
+    let num:i32 = num.trim().parse::<i32>().unwrap_or_default();
 
     println!("==================");
     println!("Decimal: {num}");

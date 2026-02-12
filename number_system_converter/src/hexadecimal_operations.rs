@@ -4,7 +4,7 @@ use std::io::Write;
 
 pub fn hexadecimal_val(b: u8, x: usize) -> i32
 {
-    let mut val = match b
+    let val = match b
     {
         b'A' => 10,
         b'B' => 11,
@@ -15,13 +15,11 @@ pub fn hexadecimal_val(b: u8, x: usize) -> i32
         _ => b,
     };
 
-    let arr = [16, 1];
 
-    val *= arr[x];
-    return val.into();
+    val.pow(x as u32).into()
 }
 
-pub fn hexadecimal_to_decimal(hex: &String) -> i32
+pub fn hexadecimal_to_decimal(hex: &str) -> i32
 {
     let mut dec = 0;
 
@@ -43,16 +41,16 @@ pub fn hexadecimal_to_decimal(hex: &String) -> i32
         }
     }
 
-    return dec;
+    dec
 }
 
-pub fn hexadecimal_to_binary(hex: &String)
+pub fn hexadecimal_to_binary(hex: &str)
 {
     let dec = hexadecimal_to_decimal(hex);
     decimal_operations::decimal_to_binary(dec);    
 }
 
-pub fn hexadecimal_to_octal(hex: &String)
+pub fn hexadecimal_to_octal(hex: &str)
 {
     let dec = hexadecimal_to_decimal(hex);
     decimal_operations::decimal_to_octal(dec);    
@@ -74,8 +72,8 @@ pub fn hexadecimal_conversion()
 
     let hex = match hex.trim()
     {
-        _ if hex.trim().bytes().count() == 2 => hex,
-        _ if hex.trim().bytes().count() < 2 =>
+        _ if hex.len() == 2 => hex,
+        _ if hex.len() < 2 =>
         {
             let mut s = String::new();
             

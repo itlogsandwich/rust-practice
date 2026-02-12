@@ -4,15 +4,12 @@ use std::io::Write;
 
 fn binary_val(dec: i32, x: usize) -> i32
 {
-    let mut val = dec;
-    let arr = [128, 64, 32, 16, 8, 4, 2 ,1];   
+    let val = dec;
 
-    val += arr[x];
-
-    return val;
+    val.pow(x as u32)
 }
 
-fn binary_to_decimal(bin: &String) -> i32
+fn binary_to_decimal(bin: &str) -> i32
 {
     let mut dec = 0;
 
@@ -25,16 +22,16 @@ fn binary_to_decimal(bin: &String) -> i32
         };
     }
 
-    return dec;
+    dec
 }
 
-fn binary_to_octal(bin: &String)
+fn binary_to_octal(bin: &str)
 {
     let dec = binary_to_decimal(bin);
     decimal_operations::decimal_to_octal(dec); 
 }
 
-fn binary_to_hexadecimal(bin: &String)
+fn binary_to_hexadecimal(bin: &str)
 {
 
     let dec = binary_to_decimal(bin);
@@ -57,12 +54,12 @@ pub fn binary_conversion()
 
     let bin = match bin.trim()
     {
-        _ if bin.trim().bytes().count() == 8 => bin,
-        _ if bin.trim().bytes().count() < 8  =>
+        _ if bin.len() == 8 => bin,
+        _ if bin.len() < 8  =>
         {
             let mut s = String::new();
 
-            let count = bin.trim().bytes().count();
+            let count = bin.len();
 
             let difference = 8 - count;
 

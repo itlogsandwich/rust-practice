@@ -5,14 +5,12 @@ use std::io::Write;
 
 pub fn octal_val(b: u8, x: usize) -> i32
 {
-    let mut val: i32 = b.into();
-    let arr = [64, 8, 1];
+    let val: i32 = b.into();
 
-    val *= arr[x];
-    return val;
+    val.pow(x as u32)
 }
 
-pub fn octal_to_decimal(oct: &String) -> i32
+pub fn octal_to_decimal(oct: &str) -> i32
 {
 
     let mut dec = 0;
@@ -30,16 +28,16 @@ pub fn octal_to_decimal(oct: &String) -> i32
         };
     }
 
-    return dec;
+    dec
 }
 
-pub fn octal_to_binary(oct: &String)
+pub fn octal_to_binary(oct: &str)
 {
     let dec = octal_to_decimal(oct);
     decimal_operations::decimal_to_binary(dec); 
 }
 
-pub fn octal_to_hexadecimal(oct: &String)
+pub fn octal_to_hexadecimal(oct: &str)
 {
     let dec = octal_to_decimal(oct);
     decimal_operations::decimal_to_hexadecimal(dec);
@@ -61,12 +59,12 @@ pub fn octal_conversion()
 
     let oct = match oct.trim()
     {
-        _ if oct.trim().bytes().count() == 3 => oct,
-        _ if oct.trim().bytes().count() < 3 =>
+        _ if oct.len() == 3 => oct,
+        _ if oct.len() < 3 =>
         {
             let mut s = String::new();
 
-            let count = oct.trim().bytes().count();
+            let count = oct.len();
 
             let difference = 3 - count;
 
